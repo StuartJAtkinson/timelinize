@@ -41,7 +41,7 @@ func (p *processor) interactiveGraph(ctx context.Context, root *Graph, opts *Int
 		return err
 	}
 
-	if err := p.downloadGraphDataFiles(ctx, root, opts); err != nil {
+	if err := p.downloadGraphDataFiles(ctx, root); err != nil {
 		return err
 	}
 
@@ -84,8 +84,7 @@ func (p *processor) assignGraphIDs(g *Graph) {
 	}
 }
 
-//nolint:unparam // FIXME: linter false positive, bug filed: https://github.com/mvdan/unparam/issues/88
-func (p *processor) downloadGraphDataFiles(ctx context.Context, g *Graph, opts *InteractiveImport) error {
+func (p *processor) downloadGraphDataFiles(ctx context.Context, g *Graph) error {
 	if g == nil {
 		return nil
 	}
@@ -96,7 +95,7 @@ func (p *processor) downloadGraphDataFiles(ctx context.Context, g *Graph, opts *
 	if (g.Item != nil && g.Item.Content.Data != nil) ||
 		(g.Entity != nil && g.Entity.NewPicture != nil) {
 		// TODO: Do CoW (write to a .tmp or .dl file first, then rename when finished, so we know by observation if it is complete
-		file, err := p.openInteractiveGraphDataFile(g)
+		file, err := p.createInteractiveGraphDataFile(g)
 		if err != nil {
 			return fmt.Errorf("openin graph data file: %w", err)
 		}
@@ -157,10 +156,10 @@ func (p *processor) downloadGraphDataFiles(ctx context.Context, g *Graph, opts *
 	}
 
 	for _, edge := range g.Edges {
-		if err := p.downloadGraphDataFiles(ctx, edge.From, opts); err != nil {
+		if err := p.downloadGraphDataFiles(ctx, edge.From); err != nil {
 			return err
 		}
-		if err := p.downloadGraphDataFiles(ctx, edge.To, opts); err != nil {
+		if err := p.downloadGraphDataFiles(ctx, edge.To); err != nil {
 			return err
 		}
 	}
@@ -196,14 +195,14 @@ func (p *processor) fillMediaTypeOfInteractiveGraph(g *Graph, dataReader io.Read
 	return dataReader, nil
 }
 
-func (p *processor) openInteractiveGraphDataFile(g *Graph) (*os.File, error) {
+func (p *processor) createInteractiveGraphDataFile(g *Graph) (*os.File, error) {
 	// We store interactive graph data files, temporarily while the user is
 	// interacting with the graph, somewhat deep in the system temp folder.
 	// It's in a system temp folder because import jobs are not typically
 	// portable; especially starting on one system and continuing on another,
 	// though I guess we could simply change the path to be something within
 	// the timeline if desired. Still, this seems more proper at least for now.
-	tmpFilePath := filepath.Join(p.tempGraphFolder(), g.ProcessingID+".graph.data")
+	tmpFilePath := InteractiveGraphDataFilePath(p.tl.ID(), p.ij.job.ID(), g.ProcessingID)
 
 	// ensure folder tree exists or we're gonna have a bad time
 	if err := os.MkdirAll(filepath.Dir(tmpFilePath), 0700); err != nil {
@@ -213,8 +212,16 @@ func (p *processor) openInteractiveGraphDataFile(g *Graph) (*os.File, error) {
 	return os.Create(tmpFilePath)
 }
 
+func InteractiveGraphDataFilePath(repoID uuid.UUID, jobID uint64, graphID string) string {
+	return filepath.Join(tempGraphFolder(repoID, jobID), graphID+".graph.data")
+}
+
 func (p *processor) tempGraphFolder() string {
-	return filepath.Join(appTempDir(), fmt.Sprintf("job-%d", p.ij.job.ID()))
+	return tempGraphFolder(p.tl.ID(), p.ij.job.ID())
+}
+
+func tempGraphFolder(repoID uuid.UUID, jobID uint64) string {
+	return filepath.Join(appTempDir(), fmt.Sprintf("tl-%s", repoID), fmt.Sprintf("job-%d", jobID))
 }
 
 func appTempDir() string {

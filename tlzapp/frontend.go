@@ -27,6 +27,7 @@ import (
 	"fmt"
 	"image/jpeg"
 	"io"
+	"log"
 	"mime"
 	"net/http"
 	"os"
@@ -39,6 +40,7 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/timelinize/timelinize/datasources/media"
+	"github.com/timelinize/timelinize/internal/tlzmedia"
 	"github.com/timelinize/timelinize/timeline"
 	"go.n16f.net/thumbhash"
 )
@@ -109,9 +111,9 @@ func (s server) serveFrontend(w http.ResponseWriter, r *http.Request) error {
 }
 
 // handleRepoResource serves resources to the UI in this URL format:
-// / repo / {repoID} / data|assets|thumbnail|image|transcode|motion-photo|dl / {dataFilePath_or_thumbnailItemID.jpg_or_itemID}
+// / repo / {repoID} / data|assets|thumbnail|image|transcode|motion-photo|dl|jobs / {dataFilePath_or_thumbnailItemID.jpg_or_itemID}
 func (s server) handleRepoResource(w http.ResponseWriter, r *http.Request) error {
-	const minParts, maxParts = 5, 6
+	const minParts, maxParts = 5, 7
 	parts := strings.SplitN(r.URL.Path, "/", maxParts)
 	if len(parts) < minParts {
 		return Error{
@@ -146,8 +148,9 @@ func (s server) handleRepoResource(w http.ResponseWriter, r *http.Request) error
 		if obfuscate {
 			mimeType := mime.TypeByExtension(path.Ext(parts[len(parts)-1]))
 			if strings.HasPrefix(mimeType, "image/") {
-				assetImagePath := strings.Join(parts[3:], "/")
-				img, err := tl.AssetImage(r.Context(), assetImagePath, true)
+				assetImagePath := tl.FullPath(strings.Join(parts[3:], "/"))
+				const size = 120
+				imageBytes, err := tlzmedia.LoadAndEncodeImage(s.log.Named("assets"), assetImagePath, nil, ".jpg", size, obfuscate)
 				if err != nil {
 					return Error{
 						Err:        err,
@@ -157,7 +160,7 @@ func (s server) handleRepoResource(w http.ResponseWriter, r *http.Request) error
 					}
 				}
 				w.Header().Set("Content-Type", "image/jpeg")
-				_, _ = w.Write(img) //nolint:gosec // unless the XSS comes from JPG metadata I guess, frontend should not eval it anyway
+				_, _ = w.Write(imageBytes) //nolint:gosec // unless the XSS comes from JPG metadata I guess, frontend should not eval it anyway
 			}
 		}
 		tl.fileServer.ServeHTTP(w, r)
@@ -185,6 +188,11 @@ func (s server) handleRepoResource(w http.ResponseWriter, r *http.Request) error
 	case "dl":
 		// download the item as a file
 		return s.downloadItem(w, r, tl, parts)
+
+	case "jobs":
+		// get the data from an active job
+		log.Println("JOB ID:", parts[4], "THEN:", parts[5], "PROC ID:", parts[6])
+		return fmt.Errorf("TODO: WIP")
 
 	default:
 		return Error{
@@ -239,60 +247,93 @@ func (s server) servePreviewImage(w http.ResponseWriter, r *http.Request, tl ope
 		return fmt.Errorf("unsupported file extension: %s - only JPEG, PNG, AVIF, and WEBP formats are supported", ext)
 	}
 
-	itemIDStr := strings.TrimSuffix(filename, ext)
-	itemID, err := strconv.ParseInt(itemIDStr, 10, 64)
-	if err != nil || itemID < 0 {
-		return fmt.Errorf("invalid item ID: %s", itemIDStr)
+	_, obfuscate := s.app.ObfuscationMode(tl.Timeline)
+
+	var imgPath, etag string
+	var imgBytes, imgHash []byte
+	var imgModTime time.Time
+
+	jobIDStr := r.URL.Query().Get("job_id")
+	graphID := r.URL.Query().Get("graph_id")
+
+	// if this isn't an interactive graph being processed (which is stored
+	// temporarily outside of the timeline repo), get image path and type
+	// from the timeline
+	if jobIDStr == "" || graphID == "" {
+		itemIDStr := strings.TrimSuffix(filename, ext)
+		itemID, err := strconv.ParseInt(itemIDStr, 10, 64)
+		if err != nil || itemID < 0 {
+			return fmt.Errorf("invalid item ID: %s", itemIDStr)
+		}
+
+		results, err := tl.Search(r.Context(), timeline.ItemSearchParams{
+			Repo:  tl.ID().String(),
+			RowID: []int64{itemID},
+		})
+		if err != nil {
+			return err
+		}
+		if len(results.Items) == 0 {
+			return fmt.Errorf("no item found with ID %d", itemID)
+		}
+		if len(results.Items) > 1 {
+			return fmt.Errorf("somehow, %d items were found having ID %d", len(results.Items), itemID)
+		}
+		itemRow := results.Items[0].ItemRow
+		if itemRow.DataFile == nil {
+			return fmt.Errorf("item %d does not have a data file recorded, so no preview image is possible", itemID)
+		}
+		if itemRow.DataType != nil {
+			if *itemRow.DataType == "image/x-icon" {
+				// icons won't get obfuscated, but last time I checked we had trouble decoding these
+				r.URL.Path = "/" + path.Join("repo", tl.ID().String(), *itemRow.DataFile)
+				return s.serveDataFile(w, r, tl, *itemRow.DataFile)
+			}
+			if !strings.HasPrefix(*itemRow.DataType, "image/") && *itemRow.DataType != "application/pdf" {
+				return fmt.Errorf("media type of item %d does not support preview image: %s", itemID, *itemRow.DataType)
+			}
+		}
+
+		imgModTime = itemRow.Stored
+		if itemRow.Modified != nil {
+			imgModTime = *itemRow.Modified
+		}
+
+		imgHash = itemRow.DataHash
+
+		imgPath, imgBytes, err = tl.GetItemContent(r.Context(), itemRow)
+		if err != nil {
+			return fmt.Errorf("getting item content: %w", err)
+		}
+	} else {
+		jobID, err := strconv.ParseUint(jobIDStr, 10, 64)
+		if err != nil {
+			return fmt.Errorf("bad job ID %s: %w", jobIDStr, err)
+		}
+		imgPath = timeline.InteractiveGraphDataFilePath(tl.InstanceID, jobID, graphID)
+		imgHash = []byte(graphID) // this is not really a hash, of course, but it works for our purposes, and etags aren't really useful for interactive imports anyway
 	}
 
-	results, err := tl.Search(r.Context(), timeline.ItemSearchParams{
-		Repo:  tl.ID().String(),
-		RowID: []int64{itemID},
-	})
-	if err != nil {
-		return err
+	// only allow browser to use cached image if it was cached with the same obfuscation setting
+	var obf []byte
+	if obfuscate {
+		obf = []byte("-obfuscated")
 	}
-	if len(results.Items) == 0 {
-		return fmt.Errorf("no item found with ID %d", itemID)
-	}
-	if len(results.Items) > 1 {
-		return fmt.Errorf("somehow, %d items were found having ID %d", len(results.Items), itemID)
-	}
-	itemRow := results.Items[0].ItemRow
-	if itemRow.DataFile == nil {
-		return fmt.Errorf("item %d does not have a data file recorded, so no preview image is possible", itemID)
-	}
-	if itemRow.DataType != nil {
-		if *itemRow.DataType == "image/x-icon" {
-			// icons won't get obfuscated, but last time I checked we had trouble decoding these
-			r.URL.Path = "/" + path.Join("repo", tl.ID().String(), *itemRow.DataFile)
-			return s.serveDataFile(w, r, tl, *itemRow.DataFile)
-		}
-		if !strings.HasPrefix(*itemRow.DataType, "image/") && *itemRow.DataType != "application/pdf" {
-			return fmt.Errorf("media type of item %d does not support preview image: %s", itemID, *itemRow.DataType)
-		}
-	}
-
-	hash := hex.EncodeToString(itemRow.DataHash)
-	if strings.Trim(r.Header.Get("If-None-Match"), "\"") == hash {
+	etag = hex.EncodeToString(append(imgHash, obf...))
+	if strings.Trim(r.Header.Get("If-None-Match"), "\"") == etag {
 		w.WriteHeader(http.StatusNotModified)
 		return nil
 	}
 
-	_, obfuscate := s.app.ObfuscationMode(tl.Timeline)
-
-	imageBytes, err := tl.GeneratePreviewImage(r.Context(), itemRow, ext, obfuscate)
+	var err error
+	imgBytes, err = tlzmedia.LoadAndEncodeImage(s.log, imgPath, imgBytes, ext, maxPreviewImageDimension, obfuscate)
 	if err != nil {
-		return err
-	}
-	w.Header().Set("Etag", `"`+hash+`"`)
-
-	modTime := itemRow.Stored
-	if itemRow.Modified != nil {
-		modTime = *itemRow.Modified
+		return fmt.Errorf("loading and encoding image: %w (path=%s bytes=%d)", err, imgPath, len(imgBytes))
 	}
 
-	http.ServeContent(w, r, filename, modTime, bytes.NewReader(imageBytes))
+	w.Header().Set("Etag", `"`+etag+`"`)
+
+	http.ServeContent(w, r, filename, imgModTime, bytes.NewReader(imgBytes))
 
 	return nil
 }
@@ -780,3 +821,7 @@ var bufPool = sync.Pool{
 		return new(bytes.Buffer)
 	},
 }
+
+// preview images are like full-screen images, so they can be a bit
+// bigger to preserve quality
+const maxPreviewImageDimension = 1400

@@ -46,7 +46,6 @@ a parent div. this takes care of that by removing the >. */
 }
 
 .input-group :not(:first-child) :not(.dropdown-menu):not(.valid-tooltip):not(.valid-feedback):not(.invalid-tooltip):not(.invalid-feedback) {
-	margin-left: -1px;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
@@ -302,6 +301,15 @@ form .dropdown-menu {
 .filter .input-icon {
 	flex: 1;
 }
+
+.accordion-button {
+	cursor: pointer;
+}
+
+.accordion-button:hover {
+	background-color: rgba(var(--tblr-primary-rgb), .04);
+}
+
 
 
 
