@@ -16,3 +16,9 @@
 - [ ] **Two empty stylesheets are still `<link>`-ed from their pages** — `resources/css/input.css` and `resources/css/timeline.css` are 0 bytes but still linked from `input.html`/`timeline.html`. Harmless but remove the dead links or fill in the intended styles.
 
 ## Resolved
+
+## Needs input (Auto Continue)
+*Left by Auto Continue 2026-07-31 — decide these, then clear CONSIDERATIONS.md.*
+- The project faces discrepancies with terminology and visual consistency:
+- The manual-entry-item concept has 3-4 different names across the app (e.g., "Data input", "Manual input", "New Item"). This needs a call on the canonical term for uniformity.
+- The "Merge" action is inconsistently colored between the Entities list (`btn btn-ghost-warning`) and an Entity's detail page (`btn btn-primary`). The merge confirm modal uses `btn-warning`. A decision is needed to standardize whether "merge" should be neutral/primary or cautionary.
