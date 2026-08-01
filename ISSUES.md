@@ -2,7 +2,6 @@
 
 ## Open
 
-- [ ] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag.
 - [ ] **`frontend/pages/new.html` is dead, unrunnable code** — a near-duplicate of `input.html` (same manual-entry form, titled "New Item"/"Manual Entry"), but it isn't registered in `resources/js/controllers.js`'s routing table (only `/pages/input.html` is). It links `resources/css/new.css`, which doesn't exist (404). Its inline script calls `L.map(...)`/`protomapsL.leafletLayer(...)` (Leaflet/protomaps), but those script tags are commented out in `index.html:72-76` with `<!-- TODO: EXPERIMENTAL for Manual Entry page -->`. Delete `new.html`, or finish and register it if the experimental map-based entry form is still wanted.
 - [ ] **`frontend/pages/input.html`'s browser-tab title says "Import" but the page is manual data entry** — `input.html:1`: `<title>Import</title>`, while the page's own on-page header (line 8-9) reads "Data input". The actual import page is `import.html`, titled "Import Data" (`import.html:1`). Two different pages both surface "Import" as the tab title — fix `input.html`'s `<title>` to match its own on-page heading (or the nav's "Manual input" label).
 - [ ] **`frontend/pages/import.html`'s heading breaks the shared page-header pattern** — `import.html:9`: plain `<h1>Import data</h1>`, no `page-title` class. Every other page (dashboard, entities, entity, item, items, input, job, map, timeline, new) uses `<h2 class="page-title">`. Align it to match.
@@ -16,6 +15,7 @@
 - [ ] **Two empty stylesheets are still `<link>`-ed from their pages** — `resources/css/input.css` and `resources/css/timeline.css` are 0 bytes but still linked from `input.html`/`timeline.html`. Harmless but remove the dead links or fill in the intended styles.
 
 ## Resolved
+- [x] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag. — auto-continue *(resolved 2026-08-01)*
 
 ## Needs input (Auto Continue)
 *Left by Auto Continue 2026-07-31 — decide these, then clear CONSIDERATIONS.md.*
