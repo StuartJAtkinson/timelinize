@@ -2,7 +2,6 @@
 
 ## Open
 
-- [ ] **`frontend/pages/entity.html` uses `<h1 class="page-title">` while every other page uses `<h2 class="page-title">`** — `entity.html:19`: `<h1 class="page-title my-2" id="name">` is the only `<h1 class="page-title">` in the codebase. All 11 other pages (dashboard, entities, items, input, job, map, settings, timeline, conversations, gallery, new) use `<h2 class="page-title">`. The existing ISSUES.md item on `import.html:9` is the related "bare `<h1>` with no class" issue — this one is the "right class, wrong tag level" case. Normalize `entity.html:19` to `<h2 class="page-title my-2" id="name">` for consistency.
 - [ ] **`frontend/pages/job.html` page-header is missing the `page-header-overlap` class used by the other dark-themed header** — `job.html:5`: `<div class="page-header d-print-none text-white">`. `dashboard.html:6` (the only other page with `text-white` on the page-header) uses `<div class="page-header page-header-overlap d-print-none text-white">`. Both pages render status/dashboard-style dark headers and should use the same class set — add `page-header-overlap` to `job.html:5`.
 
 - [ ] **`frontend/pages/new.html` is dead, unrunnable code** — a near-duplicate of `input.html` (same manual-entry form, titled "New Item"/"Manual Entry"), but it isn't registered in `resources/js/controllers.js`'s routing table (only `/pages/input.html` is). It links `resources/css/new.css`, which doesn't exist (404). Its inline script calls `L.map(...)`/`protomapsL.leafletLayer(...)` (Leaflet/protomaps), but those script tags are commented out in `index.html:72-76` with `<!-- TODO: EXPERIMENTAL for Manual Entry page -->`. Delete `new.html`, or finish and register it if the experimental map-based entry form is still wanted.
@@ -18,6 +17,7 @@
 - [ ] **Two empty stylesheets are still `<link>`-ed from their pages** — `resources/css/input.css` and `resources/css/timeline.css` are 0 bytes but still linked from `input.html`/`timeline.html`. Harmless but remove the dead links or fill in the intended styles.
 
 ## Resolved
+- [x] **`frontend/pages/entity.html` uses `<h1 class="page-title">` while every other page uses `<h2 class="page-title">`** — `entity.html:19`: `<h1 class="page-title my-2" id="name">` is the only `<h1 class="page-title">` in the codebase. All 11 other pages (dashboard, entities, items, input, job, map, settings, timeline, conversations, gallery, new) use `<h2 class="page-title">`. The existing ISSUES.md item on `import.html:9` is the related "bare `<h1>` with no class" issue — this one is the "right class, wrong tag level" case. Normalize `entity.html:19` to `<h2 class="page-title my-2" id="name">` for consistency. — auto-continue *(resolved 2026-08-02)*
 - [x] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag. — auto-continue *(resolved 2026-08-01)*
 
 ## Needs input (Auto Continue)
