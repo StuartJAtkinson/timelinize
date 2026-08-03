@@ -23,10 +23,4 @@
 
 ## Needs input (Auto Continue)
 *Left by Auto Continue 2026-08-03 — decide these, then clear CONSIDERATIONS.md.*
-- The project contains inconsistencies in terminology, such as the manual-entry-item concept having multiple names across different pages (e.g., "Data input", "Manual input", "New Item"). A call is needed to decide on a single canonical term for consistency.
-
-There's a discrepancy in the color used for the "merge" action across different parts of the application: `btn btn-ghost-warning` in entities.html, `btn btn-primary` in entity.html, and `btn-warning` in the merge confirm modal. A decision should be made on whether "merge" is a neutral/primary or cautionary action to align these.
-
-PR #198 ("Dockerfile: pin libvips to v8.18.4 to fix broken build") cannot be merged by StuartJAtkinson due to lack of merge permissions, despite all checks passing except for the `license/cla` check. Repo owner/maintainer needs to either merge the PR or grant merge rights.
-
-PR #197 ("whatsapp: support 2-digit-year date format and locale-less placeholders") is blocked by a pending `license/cla` check. The CLA assistant hasn't been signed for this PR's author, blocking the merge until the contributor signs the CLA.
+- The manual-entry-item concept has 3-4 different names across the app, which needs a call on a canonical term for consistency (e.g., "Data input," "Manual input," "New Item"). The "Merge" action color disagrees between the Entities list and an Entity's own detail page; it needs a decision on whether "merge" is neutral/primary or cautionary. PR #198 ("Dockerfile: pin libvips to v8.18.4 to fix broken build") cannot be merged by `StuartJAtkinson` due to insufficient permissions; the repo owner/maintainer needs to merge or grant merge rights. PR #197 ("whatsapp: support 2-digit-year date format and locale-less placeholders") cannot merge because the CLA check is pending. PR #186 ("Add new LINE Chat data source") also cannot be merged by `StuartJAtkinson` due to insufficient permissions; the repo owner/maintainer needs to merge or grant merge rights.
