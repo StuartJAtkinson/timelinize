@@ -22,6 +22,11 @@
 - [x] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag. — auto-continue *(resolved 2026-08-01)*
 
 ## Needs input (Auto Continue)
-*Left by Auto Continue 2026-08-02 — decide these, then clear CONSIDERATIONS.md.*
-- **The manual-entry-item concept has 3-4 different names across the app.** `input.html`'s on-page heading says "Data input"; the nav menu calls it "Manual input" (`index.html:286`); the dead `new.html` calls it "New Item"/"Manual Entry". Beyond the narrow `<title>` typo fixed in ISSUES.md, there's a broader question of which single term should be used everywhere (nav label, page heading, and — once `new.html` is either deleted or finished — its own copy). Needs a call on the canonical term.
-- **"Merge" action colour disagrees between the Entities list and an Entity's own detail page.** `entities.html:61` (list bulk-merge) uses `btn btn-ghost-warning`; `entity.html:35` (single-entity page) uses `btn btn-primary`; the merge confirm modal (`entities.html:137`) uses `btn-warning`. Same underlying action rendered as warning in two places and primary in one — needs a decision on whether "merge" is a neutral/primary action or a cautionary one, then align all three.
+*Left by Auto Continue 2026-08-03 — decide these, then clear CONSIDERATIONS.md.*
+- The project contains inconsistencies in terminology, such as the manual-entry-item concept having multiple names across different pages (e.g., "Data input", "Manual input", "New Item"). A call is needed to decide on a single canonical term for consistency.
+
+There's a discrepancy in the color used for the "merge" action across different parts of the application: `btn btn-ghost-warning` in entities.html, `btn btn-primary` in entity.html, and `btn-warning` in the merge confirm modal. A decision should be made on whether "merge" is a neutral/primary or cautionary action to align these.
+
+PR #198 ("Dockerfile: pin libvips to v8.18.4 to fix broken build") cannot be merged by StuartJAtkinson due to lack of merge permissions, despite all checks passing except for the `license/cla` check. Repo owner/maintainer needs to either merge the PR or grant merge rights.
+
+PR #197 ("whatsapp: support 2-digit-year date format and locale-less placeholders") is blocked by a pending `license/cla` check. The CLA assistant hasn't been signed for this PR's author, blocking the merge until the contributor signs the CLA.
