@@ -2,31 +2,40 @@
 <link rel="stylesheet" href="/resources/css/conversations.css">
 
 
+<!-- Page header -->
+<div class="page-header d-print-none">
+	<div class="container-xl">
+		<div class="row g-2 align-items-center">
+			<div class="me-5">
+				<div class="page-pretitle">
+					Explore
+				</div>
+				<h2 class="page-title">
+					<a id="conversations-reset">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+							fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+							stroke-linejoin="round"
+							class="icon icon-tabler icons-tabler-outline icon-tabler-messages">
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10" />
+							<path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2" />
+						</svg>
+						Conversations
+					</a>
+				</h2>
+				<div id="showing-info" class="text-secondary mt-1">Showing <span id="convos-count"></span> most
+					recent (<span id="convos-duration"></span>)</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Page body -->
 <div class="page-body">
 	<div class="container-xl">
 		<div class="row g-4">
 			<div class="col-3 filter-column">
 				<form class="filter">
-					<div class="page-pretitle">
-						Explore
-					</div>
-					<h2 class="page-title">
-						<a id="conversations-reset">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round"
-								class="icon icon-tabler icons-tabler-outline icon-tabler-messages">
-								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-								<path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10" />
-								<path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2" />
-							</svg>
-							Conversations
-						</a>
-					</h2>
-					<div id="showing-info" class="text-secondary mt-1 mb-4">Showing <span id="convos-count"></span> most
-						recent (<span id="convos-duration"></span>)</div>
-
-
 					<label class="form-label">People involved</label>
 					<div class="mb-4">
 						<select class="entity-input form-select" placeholder="Name or contact info">
