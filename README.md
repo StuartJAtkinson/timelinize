@@ -11,6 +11,15 @@
 &nbsp;
 [![Discord](https://dcbadge.limes.pink/api/server/C9dCnTW6qV?style=flat-square)](https://discord.gg/C9dCnTW6qV)
 
+> [!IMPORTANT]
+> **This is a personal fork of [`timelinize/timelinize`](https://github.com/timelinize/timelinize).**
+> Everything below is upstream's README and describes upstream's project.
+> `upstream`'s push remote is deliberately set to `DO-NOT-PUSH-TO-UPSTREAM`.
+> Fork-local changes are UI fixes in `frontend/` and the working notes in
+> `ISSUES.md`, `CONSIDERATIONS.md` and [`MCP.md`](MCP.md) (a spec for an MCP
+> server over the local API — not built, and notably a list of the endpoints
+> that must never become tools).
+
 Organize your photos & videos, chats & messages, location history, social media content, contacts, and more into a single cohesive timeline on your own computer where you can keep them alive and own them forever.
 
 Timelinize lets you import your data from practically anywhere: your computer, phone, online accounts, GPS-enabled radios, various apps and programs, contact lists, cameras, and more.
