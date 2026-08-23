@@ -3,6 +3,7 @@
 ## Open
 
 
+
 - [ ] **Same "open detail" row action styled differently on Entities vs Items list pages** — `entities.html:182-184`: `<a class="entity-view btn">View</a>` (plain grey). `items.html:219-221`: `<a class="btn btn-primary">View</a>` (blue). Same action, two different button colours — pick one.
 - [ ] **"Cancel" (neutral-dismiss) button uses two different class families** — plain `btn` in the Entities merge modal and `import.html:357`, vs `btn btn-link link-secondary` in `import.html:169` and `setup.html:227`. Same dismiss semantic, unify the class.
 - [ ] **Destructive-action buttons use two different class families** — `btn-outline-danger` for Cancel/Remove in `import.html:198`, `import.html:465`, `job.html:40`, but `item.html:18` uses `btn-ghost-red` for Delete. Same "danger" semantic, unify to one class.
@@ -12,6 +13,8 @@
 - [ ] **Two empty stylesheets are still `<link>`-ed from their pages** — `resources/css/input.css` and `resources/css/timeline.css` are 0 bytes but still linked from `input.html`/`timeline.html`. Harmless but remove the dead links or fill in the intended styles.
 
 ## Resolved
+- [x] **"Merge" is styled three different ways** — warning everywhere, as decided. `entity.html:35` (was `btn-primary`) and `entities.html:61` (was `btn-ghost-warning`) now match the confirm modal's `btn-warning`. One visual language: amber means this one bites. *(resolved 2026-08-23)*
+- [x] **The manual-entry-item concept had three names across the app** — canonical term is **"Manual input"**: it matches the nav entry users meet first and it names what distinguishes the page from the importers (a human typed it). `input.html`'s heading changed from "Data input"; its `<title>` and the nav label already said it; `index.html`'s stale "Manual Entry page" comment updated. `new.html` is already gone, so nothing survives with the old wording. *(resolved 2026-08-23)*
 - [x] **Entity detail page's tabs are non-functional** — `frontend/pages/entity.html:58-71`: the "Overview / Attributes / Items / Map" nav-links all use `href="#"` with no `data-bs-toggle="tab"`, and `entity.js` never does any tab-switching. Clicking them does nothing. Also "Attributes" is marked `active` while "Overview" (listed first) isn't. Wire up real tab switching, or if only one view is actually implemented, remove the unused tab links. — auto-continue *(resolved 2026-08-17)*
 - [x] **`frontend/pages/import.html`'s heading breaks the shared page-header pattern** — `import.html:9`: plain `<h1>Import data</h1>`, no `page-title` class. Every other page (dashboard, entities, entity, item, items, input, job, map, timeline, new) uses `<h2 class="page-title">`. Align it to match. — auto-continue *(resolved 2026-08-17)*
 - [x] **`frontend/pages/input.html`'s browser-tab title says "Import" but the page is manual data entry** — `input.html:1`: `<title>Import</title>`, while the page's own on-page header (line 8-9) reads "Data input". The actual import page is `import.html`, titled "Import Data" (`import.html:1`). Two different pages both surface "Import" as the tab title — fix `input.html`'s `<title>` to match its own on-page heading (or the nav's "Manual input" label). — auto-continue *(resolved 2026-08-08)*
