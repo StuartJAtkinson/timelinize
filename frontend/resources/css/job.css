@@ -1,6 +1,4 @@
 .navbar-overlap::after {
-	background-color: #e3e9f1;
-	/* background-color: #143a56; */
 	background-color: rgb(24, 36, 51);
 }
 

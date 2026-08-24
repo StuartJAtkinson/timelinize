@@ -4,15 +4,28 @@
 
 
 
-- [ ] **Same "open detail" row action styled differently on Entities vs Items list pages** — `entities.html:182-184`: `<a class="entity-view btn">View</a>` (plain grey). `items.html:219-221`: `<a class="btn btn-primary">View</a>` (blue). Same action, two different button colours — pick one.
-- [ ] **"Cancel" (neutral-dismiss) button uses two different class families** — plain `btn` in the Entities merge modal and `import.html:357`, vs `btn btn-link link-secondary` in `import.html:169` and `setup.html:227`. Same dismiss semantic, unify the class.
-- [ ] **Destructive-action buttons use two different class families** — `btn-outline-danger` for Cancel/Remove in `import.html:198`, `import.html:465`, `job.html:40`, but `item.html:18` uses `btn-ghost-red` for Delete. Same "danger" semantic, unify to one class.
-- [ ] **One-off hardcoded hover colour instead of the app's dark-theme tokens** — `resources/css/items.css:51`: `.entity:hover, .clickable:hover { background: #f5f5f5; }` — a light-grey literal, while the rest of the codebase uses `var(--tblr-*)` tokens (this matters because the app has a dark theme). Replace with the appropriate token.
-- [ ] **Dead CSS: `map.css` targets an id that doesn't exist** — `resources/css/map.css:28`: `#menu { background: #efefef; }` — no element with `id="menu"` exists anywhere in `map.html` (grep confirms). Remove the dead rule.
-- [ ] **Duplicate/dead `background-color` declarations on the same selector** — `resources/css/job.css:1-5`: `.navbar-overlap::after` has one commented-out declaration and a second dead one alongside the live one. Clean up to the single live declaration.
-- [ ] **Two empty stylesheets are still `<link>`-ed from their pages** — `resources/css/input.css` and `resources/css/timeline.css` are 0 bytes but still linked from `input.html`/`timeline.html`. Harmless but remove the dead links or fill in the intended styles.
+## Blocked upstream (not decisions — no write access)
+
+Moved here from `CONSIDERATIONS.md`, which implied they were choices to make. They
+are not: this account cannot merge into the upstream repo, so each needs either an
+upstream maintainer or a decision to stop tracking it.
+
+- [ ] **PR #198** "Dockerfile: pin libvips to v8.18.4 to fix broken build" — `gh pr merge` rejected, `StuartJAtkinson does not have the required permissions`. Worth noting this is the same libvips breakage that stops `go build ./...` running locally (`No package 'vips' found`).
+- [ ] **PR #197** "whatsapp: 2-digit-year date format and locale-less placeholders" — cannot merge, the only check (`license/cla`) is stuck pending.
+- [ ] **PR #186** "Add new LINE Chat data source" — merge rejected, no permission.
+- [ ] **PR #184** "Feat goodreads import clean" — merge rejected, no permission.
+- [ ] **PR #163** "feat: add element/matrix datasource" — merge rejected, no permission.
+- [ ] **PR #106** "Import PDF, Screenshot & SingleFile from ArchiveBox" — `lint` fails on the current head; needs a push to the contributor's branch, which this account also cannot do.
 
 ## Resolved
+- [x] **Same "open detail" row action styled differently on Entities vs Items** — unified on the plain `btn`. `entities.html` already reserved `btn-primary` for the page-level action at `:19` while its row action at `:182` was plain, so the plain row button was the existing pattern and `items.html` was the outlier. Keeps `btn-primary` meaning "the main action on this page" rather than appearing once per row. *(resolved 2026-08-24)*
+- [x] **"Cancel" used two different class families** — all four `data-bs-dismiss="modal"` controls are now `btn btn-link link-secondary`. It was split 2/2, so this was decided on hierarchy rather than headcount: a dismiss should read as lighter than the filled confirm beside it, which a plain `btn` does not. *(resolved 2026-08-24)*
+- [x] **Destructive-action buttons used two different class families** — `btn-ghost-red` on `item.html`'s Delete became `btn-outline-danger`, matching the other three. *(resolved 2026-08-24)*
+- [x] **One-off hardcoded hover colour** — `items.css`'s `.entity:hover` / `.clickable:hover` used the literal `#f5f5f5`, which stays light-grey under the app's dark theme. Now `var(--tblr-bg-surface-secondary)`. *(resolved 2026-08-24)*
+- [x] **Dead CSS: `map.css` targeted an id that doesn't exist** — no `id="menu"` anywhere in the pages or JS; the whole rule is gone, not just its background. *(resolved 2026-08-24)*
+- [x] **Duplicate/dead `background-color` on one selector** — `.navbar-overlap::after` carried three declarations (a dead `#e3e9f1`, a commented `#143a56`, and the live `rgb(24, 36, 51)`); only the live one remains. *(resolved 2026-08-24)*
+- [x] **Two empty stylesheets were still linked** — `input.css` and `timeline.css` were 0 bytes; both `<link>`s and both files are removed. Safe against the Go build because `main.go` uses `//go:embed all:frontend`, a directory glob rather than a file list. *(resolved 2026-08-24)*
+- [x] **The manual-entry concept had 3-4 names** — already consistent by the time it was checked: `index.html:286` and `pages/input.html` (title and heading) all read "Manual input", and the `new.html` that carried "New Item"/"Manual Entry" no longer exists. Stale entry, closed on evidence. *(resolved 2026-08-24)*
 - [x] **"Merge" is styled three different ways** — warning everywhere, as decided. `entity.html:35` (was `btn-primary`) and `entities.html:61` (was `btn-ghost-warning`) now match the confirm modal's `btn-warning`. One visual language: amber means this one bites. *(resolved 2026-08-23)*
 - [x] **The manual-entry-item concept had three names across the app** — canonical term is **"Manual input"**: it matches the nav entry users meet first and it names what distinguishes the page from the importers (a human typed it). `input.html`'s heading changed from "Data input"; its `<title>` and the nav label already said it; `index.html`'s stale "Manual Entry page" comment updated. `new.html` is already gone, so nothing survives with the old wording. *(resolved 2026-08-23)*
 - [x] **Entity detail page's tabs are non-functional** — `frontend/pages/entity.html:58-71`: the "Overview / Attributes / Items / Map" nav-links all use `href="#"` with no `data-bs-toggle="tab"`, and `entity.js` never does any tab-switching. Clicking them does nothing. Also "Attributes" is marked `active` while "Overview" (listed first) isn't. Wire up real tab switching, or if only one view is actually implemented, remove the unused tab links. — auto-continue *(resolved 2026-08-17)*

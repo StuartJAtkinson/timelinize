@@ -47,7 +47,8 @@
 
 .entity:hover,
 .clickable:hover {
-	background: #f5f5f5;
+	/* Token, not a literal: #f5f5f5 stayed light-grey under the dark theme. */
+	background: var(--tblr-bg-surface-secondary);
 }
 
 .entity-name {

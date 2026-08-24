@@ -23,11 +23,6 @@ footer {
 
 
 
-#menu {
-	position: absolute;
-	background: #efefef;
-	padding: 10px;
-}
 
 /* make sure map features appear at the proper depth */
 .location-dot { z-index: 1; }
