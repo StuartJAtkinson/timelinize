@@ -38,5 +38,5 @@ upstream maintainer or a decision to stop tracking it.
 - [x] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag. — auto-continue *(resolved 2026-08-01)*
 
 ## Needs input (Auto Continue)
-*Left by Auto Continue 2026-08-17 — decide these, then clear CONSIDERATIONS.md.*
-- The manual-entry-item concept has inconsistent names across the app, with "Data input" in `input.html`, "Manual input" in the nav menu (`index.html:286`), and "New Item"/"Manual Entry" in a dead file (`new.html`). This needs a call on a single canonical term. The "Merge" action has conflicting colors across entities list, detail page, and modal (`entities.html`, `entity.html`, `entities.html:137`). PR #198, #186, #184, and #163 cannot be merged by StuartJAtkinson due to missing merge permissions. PR #106 has a failing lint check and is blocked by StuartJAtkinson's read-only access. These issues need resolution for PRs to be merged.
+*Left by Auto Continue 2026-08-31 — decide these, then clear CONSIDERATIONS.md.*
+- PR #198 ("Dockerfile: pin libvips to v8.18.4 to fix broken build") passed all checks (license/cla, lint, test) against current head 43b9758, but `gh pr merge 198 --merge --delete-branch` was rejected: "StuartJAtkinson does not have the correct permissions to execute `MergePullRequest`". Needs a human with merge rights (or updated repo permissions) to complete the merge.
