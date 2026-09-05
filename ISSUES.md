@@ -38,6 +38,5 @@ upstream maintainer or a decision to stop tracking it.
 - [x] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag. — auto-continue *(resolved 2026-08-01)*
 
 ## Needs input (Auto Continue)
-*Left by Auto Continue 2026-08-31 — decide these, then clear CONSIDERATIONS.md.*
-- PR #198 ("Dockerfile: pin libvips to v8.18.4 to fix broken build") passed all checks (license/cla, lint, test) against current head 43b9758, but `gh pr merge 198 --merge --delete-branch` was rejected: "StuartJAtkinson does not have the correct permissions to execute `MergePullRequest`". Needs a human with merge rights (or updated repo permissions) to complete the merge.
-- PR #197 ("whatsapp: support 2-digit-year date format and locale-less placeholders") cannot be merged safely: its only check, `license/cla`, has been stuck in PENDING state since 2026-07-14 (contributor hasn't signed the CLA). Needs a human to either prompt the contributor to sign, or otherwise resolve the CLA gate.
+*Left by Auto Continue 2026-09-05 — decide these, then clear CONSIDERATIONS.md.*
+- PRs #198, #186, #184, and #163 cannot be merged due to insufficient permissions. PR #197 is blocked by an unfulfilled CLA signature. The REPO IDENTITY CRISIS blocks P1 merges indefinitely, requiring a decision on how to resolve it (options: make the fork canonical, repoint to a new repo, or bench the project).
