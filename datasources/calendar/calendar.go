@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/apognu/gocal"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

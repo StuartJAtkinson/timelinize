@@ -32,14 +32,14 @@
 //	{
 //	  "id": 841044067,
 //	  "name": "timelinize",
-//	  "html_url": "https://github.com/timelinize/timelinize",
+//	  "html_url": "https://github.com/StuartJAtkinson/timelinize",
 //	  "description": "Store your data from all your accounts and devices in a single cohesive timeline on your own computer",
 //	  "created_at": "2024-08-11T13:27:39Z",
 //	  "updated_at": "2024-09-03T07:17:29Z",
 //	  "pushed_at": "2024-09-02T15:31:59Z",
 //	  "stargazers_count": 504,
 //	  "language": "Go",
-//	  "full_name": "timelinize/timelinize",
+//	  "full_name": "StuartJAtkinson/timelinize",
 //	  "is_template": false,
 //	  "topics": [
 //	      "archival",
@@ -64,7 +64,7 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

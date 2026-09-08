@@ -29,8 +29,8 @@ import (
 	"path"
 	"time"
 
-	"github.com/timelinize/timelinize/datasources/facebook"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/facebook"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

@@ -29,7 +29,7 @@ import (
 
 	"github.com/cozy/goexif2/exif"
 	"github.com/cozy/goexif2/mknote"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

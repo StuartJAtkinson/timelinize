@@ -1,18 +1,18 @@
 <a href="https://timelinize.com">
 	<picture>
-		<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/timelinize/timelinize/main/frontend/resources/images/logo-dark.svg">
-		<source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/timelinize/timelinize/main/frontend/resources/images/logo-light.svg">
-		<img src="https://raw.githubusercontent.com/timelinize/timelinize/main/frontend/resources/images/timelinize-light.svg" alt="Timelinize" width="400">
+		<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/StuartJAtkinson/timelinize/main/frontend/resources/images/logo-dark.svg">
+		<source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/StuartJAtkinson/timelinize/main/frontend/resources/images/logo-light.svg">
+		<img src="https://raw.githubusercontent.com/StuartJAtkinson/timelinize/main/frontend/resources/images/timelinize-light.svg" alt="Timelinize" width="400">
 	</picture>
 </a>
 <hr>
 
-[![godoc](https://pkg.go.dev/badge/github.com/timelinize/timelinize)](https://pkg.go.dev/github.com/timelinize/timelinize)
+[![godoc](https://pkg.go.dev/badge/github.com/StuartJAtkinson/timelinize)](https://pkg.go.dev/github.com/StuartJAtkinson/timelinize)
 &nbsp;
 [![Discord](https://dcbadge.limes.pink/api/server/C9dCnTW6qV?style=flat-square)](https://discord.gg/C9dCnTW6qV)
 
 > [!IMPORTANT]
-> **This is a personal fork of [`timelinize/timelinize`](https://github.com/timelinize/timelinize).**
+> **This is a personal fork of [`StuartJAtkinson/timelinize`](https://github.com/StuartJAtkinson/timelinize).**
 > Everything below is upstream's README and describes upstream's project.
 > `upstream`'s push remote is deliberately set to `DO-NOT-PUSH-TO-UPSTREAM`.
 > Fork-local changes are UI fixes in `frontend/` and the working notes in
@@ -69,13 +69,13 @@ Timelinize lets you import your data from practically anywhere: your computer, p
 
 ## Download and run
 
-Download the [latest release](https://github.com/timelinize/timelinize/releases/latest) for your platform.
+Download the [latest release](https://github.com/StuartJAtkinson/timelinize/releases/latest) for your platform.
 
 See the website for [installation instructions](https://timelinize.com/docs/install).
 
 ## Develop
 
-See our [project wiki](https://github.com/timelinize/timelinize/wiki/) for instructions on [compiling from source](https://github.com/timelinize/timelinize/wiki/Develop).
+See our [project wiki](https://github.com/StuartJAtkinson/timelinize/wiki/) for instructions on [compiling from source](https://github.com/StuartJAtkinson/timelinize/wiki/Develop).
 
 
 ## Command line interface
@@ -146,7 +146,7 @@ This sets up a docker container with all the dependencies required for building 
 
 ## Motivation and vision
 
-(For roadmap, see [issues tagged `long-term 🔭`](https://github.com/timelinize/timelinize/issues?q=is%3Aissue%20label%3A%22long-term%20%F0%9F%94%AD%22).)
+(For roadmap, see [issues tagged `long-term 🔭`](https://github.com/StuartJAtkinson/timelinize/issues?q=is%3Aissue%20label%3A%22long-term%20%F0%9F%94%AD%22).)
 
 The motivation for this project is two-fold. Both press upon me with a sense of urgency, which is why I dedicated some nights and weekends to work on this.
 

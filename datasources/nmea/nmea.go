@@ -39,8 +39,8 @@ import (
 	"time"
 
 	"github.com/adrianmo/go-nmea"
-	"github.com/timelinize/timelinize/datasources/googlelocation"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/googlelocation"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

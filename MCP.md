@@ -9,7 +9,7 @@
 
 ## Fork context — read this first
 
-This is **a fork of `timelinize/timelinize`**, not an original project.
+This is **a fork of `StuartJAtkinson/timelinize`**, not an original project.
 `upstream` is set to `DO-NOT-PUSH-TO-UPSTREAM`. Two consequences for anything
 built from this spec:
 

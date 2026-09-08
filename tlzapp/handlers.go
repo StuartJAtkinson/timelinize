@@ -33,7 +33,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/websocket"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

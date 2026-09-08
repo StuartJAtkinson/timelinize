@@ -38,8 +38,8 @@ import (
 	"time"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/timelinize/timelinize/datasources/media"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/media"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.n16f.net/thumbhash"
 )
 

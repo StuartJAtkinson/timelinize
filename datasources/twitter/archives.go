@@ -30,7 +30,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 // Recognize returns whether the input is supported.

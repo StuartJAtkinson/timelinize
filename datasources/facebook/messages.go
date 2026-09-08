@@ -27,7 +27,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func GetMessages(dsName string, dirEntry timeline.DirEntry, params timeline.ImportParams) error {

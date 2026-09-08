@@ -25,7 +25,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 // LocationSource is a type that can get the next location to process.

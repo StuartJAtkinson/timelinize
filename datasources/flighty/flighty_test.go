@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/timelinize/timelinize/datasources/flighty"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/flighty"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 type expectedDetails struct {

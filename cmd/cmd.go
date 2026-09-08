@@ -33,8 +33,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/timelinize/timelinize/timeline"
-	"github.com/timelinize/timelinize/tlzapp"
+	"github.com/StuartJAtkinson/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/tlzapp"
 	"go.uber.org/zap"
 )
 

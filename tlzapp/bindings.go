@@ -36,7 +36,7 @@ import (
 	"time"
 
 	"github.com/mholt/archives"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

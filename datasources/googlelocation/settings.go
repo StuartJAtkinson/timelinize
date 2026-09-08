@@ -25,7 +25,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func loadSettingsFromTakeoutArchive(d timeline.DirEntry) (settings, error) {

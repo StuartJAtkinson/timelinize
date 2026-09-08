@@ -8,8 +8,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/timelinize/timelinize/datasources/whatsapp"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/whatsapp"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func TestFileImport(t *testing.T) {

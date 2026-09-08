@@ -25,8 +25,8 @@ import (
 	"io"
 	"strings"
 
-	"github.com/timelinize/timelinize/datasources/imessage"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/imessage"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 // (requires iOS 11 and higher)

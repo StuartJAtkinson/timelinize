@@ -22,7 +22,7 @@ import (
 	"encoding/xml"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 // Smses was generated 2019-07-10 using an export from

@@ -7,8 +7,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/timelinize/timelinize/datasources/applephotos"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/applephotos"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func (fimp *FileImporter) photosLibrary(ctx context.Context, dirEntry timeline.DirEntry) error {

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func attachmentToItem(attachmentDetail string, timestamp time.Time, owner timeline.Entity, dirEntry timeline.DirEntry) *timeline.Item {

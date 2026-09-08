@@ -24,7 +24,7 @@ import (
 	"sync/atomic"
 
 	"github.com/cshum/vipsgen/vips"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 // TrapSignals create signal handlers for all applicable signals for this system.

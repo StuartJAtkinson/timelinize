@@ -31,8 +31,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/timelinize/timelinize/datasources/googlelocation"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/googlelocation"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 
@@ -474,7 +474,7 @@ func (p position) location(feature feature, lenient bool) (*googlelocation.Locat
 	altitude, ts := feature.altitude, feature.time
 
 	// the GeoJSON spec advises against supporting more than the optional 3rd element (altitude),
-	// but we've seen messy data (https://github.com/timelinize/timelinize/issues/23) where the
+	// but we've seen messy data (https://github.com/StuartJAtkinson/timelinize/issues/23) where the
 	// third element is timestamp and even a fourth element is altitude sometimes (!!)...
 	// that blatantly violates the spec, but we can maybe do some basic sanity checks to see
 	// if we can assume those values

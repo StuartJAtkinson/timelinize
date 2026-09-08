@@ -37,7 +37,7 @@ import (
 	"github.com/cozy/goexif2/tiff"
 	"github.com/dhowden/tag"
 	"github.com/mholt/go-xmp/xmp"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

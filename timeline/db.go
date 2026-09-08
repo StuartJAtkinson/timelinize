@@ -38,7 +38,7 @@ import (
 	sqlite_vec "github.com/asg017/sqlite-vec-go-bindings/cgo"
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3" // importing registers the sqlite3 driver
-	"github.com/timelinize/timelinize/datasources"
+	"github.com/StuartJAtkinson/timelinize/datasources"
 	"go.uber.org/zap"
 )
 

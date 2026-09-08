@@ -23,7 +23,7 @@ import (
 	"io/fs"
 
 	"github.com/cozy/goexif2/exif"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 type fileItem struct {

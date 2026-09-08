@@ -10,7 +10,7 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 //go:generate curl -L -o airports.csv https://raw.githubusercontent.com/lxndrblz/Airports/master/airports.csv

@@ -8,7 +8,7 @@ import (
 	"io/fs"
 	"sync"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func (fi *FileImporter) decodeLegacyTakeoutFormat(ctx context.Context, dirEntry timeline.DirEntry, params timeline.ImportParams) (bool, error) {

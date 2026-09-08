@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 
@@ -33,7 +33,7 @@ const (
 	openLibraryRequestTimeout   = 8 * time.Second
 	// budget the total cover resolution time per book to avoid long stalls when covers are enabled
 	openLibraryCoverResolveBudget = 3 * time.Second
-	coverUserAgent                = "Timelinize Goodreads Importer (+https://github.com/timelinize/timelinize)"
+	coverUserAgent                = "Timelinize Goodreads Importer (+https://github.com/StuartJAtkinson/timelinize)"
 )
 
 var dateLayouts = []string{

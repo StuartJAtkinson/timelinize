@@ -22,7 +22,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 type format struct {

@@ -29,8 +29,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/timelinize/timelinize/datasources/generic"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/generic"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

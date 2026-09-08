@@ -24,7 +24,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"golang.org/x/sys/unix"
 )
 

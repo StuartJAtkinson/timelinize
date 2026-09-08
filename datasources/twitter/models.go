@@ -35,7 +35,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 // type tweetFromAPI struct {

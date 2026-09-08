@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func TestISBN10To13(t *testing.T) {

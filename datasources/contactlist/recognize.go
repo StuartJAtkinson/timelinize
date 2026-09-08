@@ -25,7 +25,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 // Recognize returns true if the file is recognized as a contact list,

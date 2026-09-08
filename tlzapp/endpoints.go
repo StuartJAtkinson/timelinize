@@ -27,7 +27,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func (app *App) registerCommands() {

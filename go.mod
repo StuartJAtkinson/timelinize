@@ -1,4 +1,4 @@
-module github.com/timelinize/timelinize
+module github.com/StuartJAtkinson/timelinize
 
 go 1.25.8
 

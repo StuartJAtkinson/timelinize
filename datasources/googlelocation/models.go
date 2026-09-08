@@ -25,7 +25,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 type onDeviceLocationiOS2024 struct {

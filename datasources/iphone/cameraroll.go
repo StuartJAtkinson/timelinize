@@ -25,8 +25,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/timelinize/timelinize/datasources/media"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/media"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

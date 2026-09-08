@@ -3,7 +3,7 @@ package airports_test
 import (
 	"testing"
 
-	"github.com/timelinize/timelinize/internal/airports"
+	"github.com/StuartJAtkinson/timelinize/internal/airports"
 )
 
 func Test_buildAirportDatabase(t *testing.T) {

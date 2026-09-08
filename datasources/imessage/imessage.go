@@ -34,7 +34,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"github.com/zeebo/blake3"
 	"go.uber.org/zap"
 )

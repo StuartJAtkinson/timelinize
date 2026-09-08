@@ -24,7 +24,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 // MMS represents a multimedia message.

@@ -5,7 +5,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 const filenameFromLegacyTakeout = "Records.json"

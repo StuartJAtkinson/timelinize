@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/timelinize/timelinize/internal/airports"
+	"github.com/StuartJAtkinson/timelinize/internal/airports"
 )
 
 type flight struct {

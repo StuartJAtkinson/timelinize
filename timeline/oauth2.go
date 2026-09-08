@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/timelinize/timelinize/internal/oauth2client"
+	"github.com/StuartJAtkinson/timelinize/internal/oauth2client"
 	"golang.org/x/oauth2"
 )
 
