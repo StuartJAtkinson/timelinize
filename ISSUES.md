@@ -46,5 +46,5 @@ upstream maintainer or a decision to stop tracking it.
 - [x] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag. — auto-continue *(resolved 2026-08-01)*
 
 ## Needs input (Auto Continue)
-*Left by Auto Continue 2026-09-05 — decide these, then clear CONSIDERATIONS.md.*
-- PRs #198, #186, #184, and #163 cannot be merged due to insufficient permissions. PR #197 is blocked by an unfulfilled CLA signature. The REPO IDENTITY CRISIS blocks P1 merges indefinitely, requiring a decision on how to resolve it (options: make the fork canonical, repoint to a new repo, or bench the project).
+*Left by Auto Continue 2026-09-08 — decide these, then clear CONSIDERATIONS.md.*
+- PR #198 (pin libvips to v8.18.4 to fix broken build) is CLEAN/MERGEABLE with all checks passing, but upstream PRs are rejected due to insufficient permissions. The project should either stop targeting upstream PRs entirely and cherry-pick this change onto the main branch of the owned repository, or the project should be benched.
