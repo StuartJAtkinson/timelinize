@@ -2,7 +2,7 @@
 	<picture>
 		<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/StuartJAtkinson/timelinize/main/frontend/resources/images/logo-dark.svg">
 		<source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/StuartJAtkinson/timelinize/main/frontend/resources/images/logo-light.svg">
-		<img src="https://raw.githubusercontent.com/StuartJAtkinson/timelinize/main/frontend/resources/images/timelinize-light.svg" alt="Timelinize" width="400">
+		<img src="https://raw.githubusercontent.com/StuartJAtkinson/timelinize/main/frontend/resources/images/logo-light.svg" alt="Timelinize" width="400">
 	</picture>
 </a>
 <hr>
@@ -12,13 +12,7 @@
 [![Discord](https://dcbadge.limes.pink/api/server/C9dCnTW6qV?style=flat-square)](https://discord.gg/C9dCnTW6qV)
 
 > [!IMPORTANT]
-> **This is a personal fork of [`StuartJAtkinson/timelinize`](https://github.com/StuartJAtkinson/timelinize).**
-> Everything below is upstream's README and describes upstream's project.
-> `upstream`'s push remote is deliberately set to `DO-NOT-PUSH-TO-UPSTREAM`.
-> Fork-local changes are UI fixes in `frontend/` and the working notes in
-> `ISSUES.md`, `CONSIDERATIONS.md` and [`MCP.md`](MCP.md) (a spec for an MCP
-> server over the local API — not built, and notably a list of the endpoints
-> that must never become tools).
+> **This is a personal fork of [`timelinize/timelinize`](https://github.com/timelinize/timelinize)**, the archived upstream. The fork is now canonical — the `upstream` remote has been removed and `origin` points at `StuartJAtkinson/timelinize`. Everything below is upstream's README and describes upstream's project. Fork-local changes are UI fixes in `frontend/` and the working notes in `ISSUES.md`, `CONSIDERATIONS.md`, `UX.md` and [`MCP.md`](MCP.md) (a spec for an MCP server over the local API — not built, and notably a list of the endpoints that must never become tools).
 
 Organize your photos & videos, chats & messages, location history, social media content, contacts, and more into a single cohesive timeline on your own computer where you can keep them alive and own them forever.
 

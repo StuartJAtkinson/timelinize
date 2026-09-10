@@ -9,9 +9,7 @@
 
 ## Fork context — read this first
 
-This is **a fork of `StuartJAtkinson/timelinize`**, not an original project.
-`upstream` is set to `DO-NOT-PUSH-TO-UPSTREAM`. Two consequences for anything
-built from this spec:
+This is **a fork of [`timelinize/timelinize`](https://github.com/timelinize/timelinize)** (now archived), not an original project. The fork is now canonical — `upstream` has been removed, `origin` points at `StuartJAtkinson/timelinize`. Two consequences for anything built from this spec:
 
 1. An MCP server added here is **fork-local** unless deliberately proposed
    upstream. Keep it in one new package so a rebase onto upstream stays cheap —
