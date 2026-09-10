@@ -17,6 +17,20 @@ ifeq ($(OS_NAME),windows)
 	BIN_NAME_NATIVE=$(BIN_NAME)_$(OS_NAME)_$(OS_ARCH).exe
 endif
 
+# Bundled libvips shipped with the Windows portable app. Activated whenever the
+# bundle exists so `make`-driven `go build` finds vips.h / libvips-42.dll without
+# a system install — works on Windows native, bash-on-Windows, and the
+# DevContainer. Skipped cleanly on machines that have system vips installed.
+VIPS_BUNDLED_DIR=$(PWD)/portableApp/vips/vips-dev-8.18
+ifeq ($(wildcard $(VIPS_BUNDLED_DIR)/lib/pkgconfig/vips.pc),)
+	# Bundle not present — fall back to whatever vips the user has on PATH.
+else
+	ifeq ($(VIPS_WHICH),)
+		export PKG_CONFIG_PATH:=$(VIPS_BUNDLED_DIR)/lib/pkgconfig
+		export PATH:=$(VIPS_BUNDLED_DIR)/bin:$(PATH)
+	endif
+endif
+
 export PATH:=$(BIN_ROOT):$(PATH)
 
 all: bin
