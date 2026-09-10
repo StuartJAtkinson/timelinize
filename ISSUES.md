@@ -1,10 +1,10 @@
 # Issues — timelinize
 
 ## Open
-- [ ] **PR #106 work ("Import PDF, Screenshot & SingleFile from ArchiveBox") is not merged** — the branch is preserved on the owned repo as `origin/pr-106-archivebox`; `lint` was failing on it at the old upstream. Fix lint on that branch and merge it into `main` here. *(found 2026-09-08)*
 - [ ] **`go build ./...` cannot run on this machine** — pre-existing toolchain gap, unrelated to any merge: `pkg-config` finds no `vips` (libvips not installed) and `sqlite-vec-go-bindings/cgo` can't find `sqlite3.h`. The five merged datasource PRs are therefore unverified by a compile. Install libvips + SQLite dev headers and expose them via `PKG_CONFIG_PATH`, then build. *(found 2026-09-08)*
 
 ## Resolved
+- [x] **PR #106 work ("Import PDF, Screenshot & SingleFile from ArchiveBox") is not merged** — the branch is preserved on the owned repo as `origin/pr-106-archivebox`; `lint` was failing on it at the old upstream. Fix lint on that branch and merge it into `main` here. *(found 2026-09-08)* — auto-continue *(resolved 2026-09-10)*
 - [x] **Go module path renamed to the owned repo** — plain project-wide replace of `timelinize/timelinize` with `StuartJAtkinson/timelinize` across 89 files (go.mod, every Go import, README/MCP docs, the issue-template config, the two `api.go.v*` files). `go list ./...` resolves every package under the new path. ISSUES.md itself was left alone so the decision history stays readable. *(resolved 2026-09-08)*
 - [x] **Repo identity: fork is canonical, upstream is gone** — decision implemented in full. The `upstream` remote (`timelinize/timelinize`) is removed, `gh repo set-default` now points at `StuartJAtkinson/timelinize`, and `gh pr list` resolves against the owned repo (returns empty — nothing left to merge against a repo we don't control). Nothing in this project targets the original repo any more. *(resolved 2026-09-08)*
 - [x] **PR #198 (pin libvips to v8.18.4) applied to the owned repo** — the change was brought across and merged into `main` here instead of waiting on an upstream merge that would never be permitted. *(resolved 2026-09-08)*
