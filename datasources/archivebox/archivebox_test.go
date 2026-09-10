@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/timelinize/timelinize/datasources/archivebox"
-	"github.com/timelinize/timelinize/internal/testhelpers"
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/datasources/archivebox"
+	"github.com/StuartJAtkinson/timelinize/internal/testhelpers"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func TestFileImport(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 	"go.uber.org/zap"
 )
 

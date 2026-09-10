@@ -7,7 +7,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/timelinize/timelinize/timeline"
+	"github.com/StuartJAtkinson/timelinize/timeline"
 )
 
 func ValidateItemData(t *testing.T, expectedFilename string, expectedData any, itemData timeline.ItemData, errorMessage string, errorArgs ...any) {
