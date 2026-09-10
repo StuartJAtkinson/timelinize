@@ -1178,9 +1178,9 @@ var classifications = []Classification{
 		Name:        "snapshot",
 		Labels:      []string{"Archive", "Snapshot"},
 		Description: "A point-in-time snapshot of something that can change over time, like a website",
-  },
-  {
-    Name:        "event",
+	},
+	{
+		Name:        "event",
 		Labels:      []string{"Event", "Calendar item"},
 		Description: "An event or item on a calendar",
 	},
@@ -1193,7 +1193,7 @@ var (
 	ClassSocial     = getClassification("social")
 	ClassLocation   = getClassification("location") // ideally has a coordinate, but could also represent the attribute_id's visit to a named place at a certain time (TODO: Test that, does it actually work without coords?)
 	ClassMedia      = getClassification("media")
- 	ClassScreen     = getClassification("screen") // TODO: call it screenshot maybe...? but screen recordings...
+	ClassScreen     = getClassification("screen") // TODO: call it screenshot maybe...? but screen recordings...
 	ClassCollection = getClassification("collection")
 	ClassNote       = getClassification("note")
 	ClassDocument   = getClassification("document")
