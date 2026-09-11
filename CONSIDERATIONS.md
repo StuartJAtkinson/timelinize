@@ -1,3 +1,2 @@
 # Considerations
 
-- **Dark dashboard header gradient/colour** — `frontend/resources/css/job.css:2` and `.navbar-overlap::after` use a literal `rgb(24, 36, 51)` for the dark header band. The dashboard + job pages share this dark "page-header-overlap" style; both use the same hardcoded colour. No Tabler `--tblr-*` token exists for "page-header dark band". Three plausible answers: (a) accept the literal as the canonical dark-band colour and document it; (b) define a new `--tblr-page-header-dark` token in common.css `:root`; (c) defer until Tabler ships an official token. Decide which before more pages adopt the dark-header style.
