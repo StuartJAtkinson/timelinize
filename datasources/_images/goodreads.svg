@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="Goodreads">
+	<defs>
+		<linearGradient id="gr-bg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#fbf9f4"/>
+			<stop offset="0.45" stop-color="#f1ece0"/>
+			<stop offset="1" stop-color="#e8e0cd"/>
+		</linearGradient>
+	</defs>
+	<rect x="4" y="4" width="184" height="184" rx="34" fill="url(#gr-bg)"/>
+	<text x="96" y="152" fill="#71442b" font-family="Georgia, 'Times New Roman', serif" font-size="170" text-anchor="middle">g</text>
+</svg>

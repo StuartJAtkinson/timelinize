@@ -15,7 +15,7 @@ func init() {
 	err := timeline.RegisterDataSource(timeline.DataSource{
 		Name:            "archivebox",
 		Title:           "ArchiveBox",
-		Icon:            "archivebox.png",
+		Icon:            "archivebox.svg",
 		Description:     "Import the website snapshots from your ArchiveBox instance to your timeline",
 		NewFileImporter: func() timeline.FileImporter { return new(Importer) },
 	})

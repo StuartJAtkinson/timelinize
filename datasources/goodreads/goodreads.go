@@ -48,7 +48,7 @@ func init() {
 	err := timeline.RegisterDataSource(timeline.DataSource{
 		Name:            dataSourceName,
 		Title:           "Goodreads",
-		Icon:            "goodreads.jpg",
+		Icon:            "goodreads.svg",
 		Description:     "Imports Goodreads library export CSV files.",
 		NewOptions:      func() any { return defaultOptions() },
 		NewFileImporter: func() timeline.FileImporter { return FileImporter{} },

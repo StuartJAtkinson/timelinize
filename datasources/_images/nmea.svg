@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-label="NMEA">
+	<rect x="10" y="34" width="172" height="124" rx="14" fill="#1b4f9c"/>
+	<text x="96" y="92" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="46" font-style="italic" text-anchor="middle">NM</text>
+	<text x="96" y="140" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="46" font-style="italic" text-anchor="middle">EA</text>
+	<text x="168" y="152" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="18" text-anchor="middle">&#174;</text>
+</svg>
