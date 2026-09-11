@@ -31,6 +31,7 @@ async function itemPageMain() {
 	$('#time .minute-hand').setAttribute('transform', `rotate(${minuteAngle} 12 12)`);
 	
 	$('#item-id').innerText = item.id;
+	document.title = `Item - ${item.id}`;
 
 	// download button
 	// server may need to create a synthetic file for download if it's not a data file already

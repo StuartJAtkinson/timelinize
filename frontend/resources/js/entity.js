@@ -41,6 +41,7 @@ async function entityPageMain() {
 	$('#entity-type').innerHTML = entityTypes[ent.type];
 	$('#picture').innerHTML = avatar(true, ent, 'avatar-xxl');
 	$('#name').innerText = ent.name || "Unknown";
+	document.title = `Entity - ${ent.name || "Unknown"}`;
 
 	for (const attr of ent.attributes) {
 		if (attr.name == "birth_date") {
