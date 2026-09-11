@@ -1,3 +1,18 @@
+# Datasource icons
+
+One file per datasource, named in that datasource's `Icon:` field.
+
+**SVG for flat logos, PNG for detailed artwork.** A flat logo — solid shapes, a
+wordmark, a single glyph — is drawn as SVG so it stays crisp at any size.
+Detailed multi-colour artwork (`apple_contacts.png`, `email.png`,
+`flighty.png`, `media.png`, `sms_backup_restore.png`) stays PNG: hand-vectorising
+it would change how it looks, for no gain.
+
+**PNG is only acceptable with an alpha channel.** The icons render on a dark
+theme, so an opaque raster shows as a white box behind the logo. That is what
+retired the last two JPGs. Check before adding one: the PNG must be colour type
+4/6, or type 3 with a `tRNS` chunk.
+
 # Assets license
 
 ## firefox.svg
