@@ -7,7 +7,7 @@ Verified conventions derived from a look-at-it pass over `frontend/pages/*.html`
 Every page opens with the same page-header skeleton, except `setup.html` (wizard) and `input.html` (manually-edited card):
 
 ```html
-<div class="page-header d-print-none">           <!-- add page-header-overlap + text-white for dark dashboards -->
+<div class="page-header d-print-none">           <!-- add text-white for dark headers; the dark bg comes from the controller setting data-bs-theme="dark" on .navbar, which makes the page-header under .navbar-overlap render dark -->
   <div class="container-xl">
     <div class="row g-2 align-items-center">
       <div class="col">                         <!-- sometimes an icon SVG is nested before the title -->
@@ -27,7 +27,7 @@ Every page opens with the same page-header skeleton, except `setup.html` (wizard
 </div>
 ```
 
-- `<title>` matches the `<h2 class="page-title">` text (or its module label) so the browser tab is useful. `entity.html` and `item.html` are the two exceptions — both carry `<!-- TODO: use JS to change the title -->` and currently hardcode "Entity" / "Item".
+- `<title>` matches the `<h2 class="page-title">` text (or its module label) so the browser tab is useful. `entity.html` (`Entity - <name>`) and `item.html` (`Item - <id>`) set their `<title>` client-side in `entity.js:44` / `item.js:34` once the data loads; the static `<title>Entity</title>` / `<title>Item</title>` is just the pre-load placeholder.
 - Page-level primary action lives in the right-hand `col-auto ms-auto d-print-none` slot (`btn-list` wrapper). Examples: Dashboard has none, Entities has the "Merge" button (`btn-warning`), Item has Download (`btn-primary`) + Edit (`btn-outline disabled`) + Delete (`btn-outline-danger disabled`), Import has "Add files..." (`btn-primary`).
 - Page subtitle ("Showing X most recent", "Showing results 1-50") lives directly under the title in `text-secondary mt-1`.
 
