@@ -373,10 +373,13 @@ dfn {
 
 
 
-/* TODO: wish the z-index wasn't a problem */
-/* .page-header-overlap::after {
-	--wails-draggable: drag;
-} */
+/* page-header-overlap was a dead class — no rule ever shipped for it, and the
+   Wails-era `--wails-draggable` declaration it referenced was abandoned in 2023
+   when the project moved off Wails. UX.md describes the dark page-header as
+   coming from `.navbar-overlap::after` (Tabler) extending the navbar's
+   background down 9 rem — which is what Dashboard (data-bs-theme="dark" on the
+   navbar) and Job (job.css's literal background on .navbar-overlap::after)
+   both rely on today. */
 
 
 
