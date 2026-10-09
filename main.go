@@ -45,6 +45,7 @@ import (
 	_ "github.com/StuartJAtkinson/timelinize/datasources/media"
 	_ "github.com/StuartJAtkinson/timelinize/datasources/nmea"
 	_ "github.com/StuartJAtkinson/timelinize/datasources/smsbackuprestore"
+	_ "github.com/StuartJAtkinson/timelinize/datasources/socialmediaarchiver"
 	_ "github.com/StuartJAtkinson/timelinize/datasources/strava"
 	_ "github.com/StuartJAtkinson/timelinize/datasources/telegram"
 	_ "github.com/StuartJAtkinson/timelinize/datasources/twitter"

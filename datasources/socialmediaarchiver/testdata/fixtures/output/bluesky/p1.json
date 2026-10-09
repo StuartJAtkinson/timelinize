@@ -1,0 +1,35 @@
+{
+  "uid": "bluesky:p1",
+  "id": "p1",
+  "source": "bluesky",
+  "target": "alice.bsky.social",
+  "url": "https://bsky.app/profile/alice.bsky.social/post/p1",
+  "timestamp": "2026-05-01T10:00:00Z",
+  "title": "",
+  "text": "hello from bluesky",
+  "author": {
+    "id": "did:plc:alice",
+    "name": "Alice",
+    "url": "https://bsky.app/profile/alice.bsky.social",
+    "thumbnail": ""
+  },
+  "media": [
+    {
+      "url": "https://cdn.bsky.app/abc.png",
+      "local_path": "output\\images\\abc.png",
+      "media_type": "image",
+      "width": null,
+      "height": null,
+      "file_size": null
+    },
+    {
+      "url": "https://cdn.bsky.app/gone.png",
+      "local_path": null,
+      "media_type": "image"
+    }
+  ],
+  "links": [],
+  "metrics": {},
+  "comments": [],
+  "raw": {}
+}
