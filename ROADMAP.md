@@ -16,7 +16,7 @@ socialMediaArchiver (`H:\GitHub\socialMediaArchiver`) already normalises all of 
 X, RSS and Facebook Pages) into one `Item` schema (`core/models.py`: author, text, timestamp,
 media with `local_path`). One importer for that archive covers all of them.
 
-- [ ] **M2a socialMediaArchiver data source** — new `datasources/socialmediaarchiver/` that recognises a socialMediaArchiver output folder and imports each normalised item as a timeline item: timestamp, text, author as entity (one per platform account), media from `local_path`, original URL kept. Registered in `datasources.go`, with an SVG icon per the datasources icon rule. Go test over a small fixture archive (one post per platform). Done when `go test ./datasources/socialmediaarchiver/...` passes.
+- [x] **M2a socialMediaArchiver data source** — new `datasources/socialmediaarchiver/` that recognises a socialMediaArchiver output folder and imports each normalised item as a timeline item: timestamp, text, author as entity (one per platform account), media from `local_path`, original URL kept. Registered in `datasources.go`, with an SVG icon per the datasources icon rule. Go test over a small fixture archive (one post per platform). Done when `go test ./datasources/socialmediaarchiver/...` passes.
 - [ ] **M2b Dedup against platform exports** — when the same post also arrives through an existing source (e.g. `twitter` from an official archive), the socialMediaArchiver item merges into it instead of duplicating, keyed on the platform's post id. Done when a test importing both shows one item.
 
 ## Human-only
