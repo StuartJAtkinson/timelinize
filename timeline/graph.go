@@ -357,6 +357,15 @@ func (ret *ItemRetrieval) SetKey(key string) {
 	ret.key = h.Sum(nil)
 }
 
+// SetPostKey sets the retrieval key shared by every data source that imports
+// posts from a social platform, so the same post arriving through more than one
+// data source (e.g. an official Twitter archive and socialMediaArchiver) is
+// stored as one item. platform is the lowercase platform name ("twitter") and
+// postID is the platform's own ID for the post.
+func (ret *ItemRetrieval) SetPostKey(platform, postID string) {
+	ret.SetKey("post:" + platform + ":" + postID)
+}
+
 // idHash sets the hash derived from the data source and the original ID assigned
 // by the data source, or nil if both values are not present.
 func (it *Item) makeIDHash(dataSourceName *string) {

@@ -151,6 +151,8 @@ func graph(dirEntry timeline.DirEntry, it item) *timeline.Graph {
 		Content:        timeline.ItemData{Data: timeline.StringData(it.Text)},
 		Metadata:       meta,
 	}}
+	// archiver source names match the platform names other data sources use ("twitter")
+	g.Item.Retrieval.SetPostKey(it.Source, it.ID)
 
 	for _, m := range it.Media {
 		local := resolve(dirEntry, m.LocalPath)

@@ -149,6 +149,7 @@ func (c *Client) makeItemGraphFromTweet(_ context.Context, params timeline.Impor
 			"Likes":    int(t.FavoriteCount),
 		},
 	}
+	item.Retrieval.SetPostKey("twitter", t.TweetIDStr)
 	ig := &timeline.Graph{Item: item}
 
 	hasText := t.text() != ""
