@@ -37,6 +37,7 @@ Every page opens with the same page-header skeleton, except `setup.html` (wizard
 - `btn btn-primary`: the single main page-level action, plus Save/Create-type confirms.
 - `btn btn-outline-danger`: destructive confirms and row-level danger actions (Delete, Remove).
 - `btn btn-warning`: "Merge" — the one action whose result bites (entity merge), so amber everywhere it appears (page, table row, modal).
+- `btn btn-orange`: job "Restart" (`job.html`) — deliberately the more saturated Tabler orange, distinct from the Merge amber; don't fold it into `btn-warning`.
 - `btn btn-link link-secondary`: modal Cancel — lighter than the confirm it sits beside.
 - `btn btn-ghost-info` (Tabler class): "Expand all" / "Collapse all" — informational toggles that don't change data.
 
