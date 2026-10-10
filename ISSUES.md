@@ -69,5 +69,5 @@
 - [x] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag. — auto-continue *(resolved 2026-08-01)*
 
 ## Needs input (Auto Continue)
-*Left by Auto Continue 2026-10-09 — decide these, then clear CONSIDERATIONS.md.*
-- New socialMediaArchiver import icon `datasources/_images/socialmediaarchiver.svg` (`#2563eb` tile, white speech bubble) was drawn unseen; shown beside `datasources/_images/twitter.svg` and `datasources/_images/archivebox.svg` on the dark theme, does it sit right, or should it be redrawn?
+*Left by Auto Continue 2026-10-10 — decide these, then clear CONSIDERATIONS.md.*
+- `page-pretitle` is on dashboard/entity/item/timeline/conversations/gallery/map but missing from entities, items, import, settings, input and job page headers. Add one to each (e.g. "Manage" for entities/items, "Data" for import/input/job, "Overview" for settings), or leave top-level pages bare?
