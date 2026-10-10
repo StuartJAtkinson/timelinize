@@ -11,7 +11,7 @@ Every page opens with the same page-header skeleton, except `setup.html` (wizard
   <div class="container-xl">
     <div class="row g-2 align-items-center">  <!-- job.html uses g-3 for its status-indicator / title / buttons row -->
       <div class="col">                         <!-- sometimes an icon SVG is nested before the title -->
-        <div class="page-pretitle">Explore</div>  <!-- or "Overview" / "Item" / "Entity"; absent on entities, items, import, settings, input, job -->
+        <div class="page-pretitle">Explore</div>  <!-- or "Overview" (dashboard, settings) / "Manage" (entities, items) / "Data" (import, input, job) / "Item" / "Entity" -->
         <h2 class="page-title">…</h2>
         <div class="text-secondary mt-1">…</div>  <!-- optional subtitle -->
       </div>
