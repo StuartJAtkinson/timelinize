@@ -9,9 +9,9 @@ Every page opens with the same page-header skeleton, except `setup.html` (wizard
 ```html
 <div class="page-header d-print-none">           <!-- add text-white for dark headers; the dark bg comes from the controller setting data-bs-theme="dark" on .navbar, which makes the page-header under .navbar-overlap render dark -->
   <div class="container-xl">
-    <div class="row g-2 align-items-center">
+    <div class="row g-2 align-items-center">  <!-- job.html uses g-3 for its status-indicator / title / buttons row -->
       <div class="col">                         <!-- sometimes an icon SVG is nested before the title -->
-        <div class="page-pretitle">Explore</div>  <!-- or "Overview" / "Item" / "Entity" -->
+        <div class="page-pretitle">Explore</div>  <!-- or "Overview" / "Item" / "Entity"; absent on entities, items, import, settings, input, job -->
         <h2 class="page-title">…</h2>
         <div class="text-secondary mt-1">…</div>  <!-- optional subtitle -->
       </div>
