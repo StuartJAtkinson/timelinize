@@ -64,5 +64,6 @@ The filter column opens with the same `<div class="page-pretitle">Explore</div>`
 
 ## Dark-theme
 
-- `--tblr-*` tokens drive everything in light *and* dark themes. Literal hex / rgb colours are avoided in app CSS — `frontend/resources/css/items.css:51` already shows the migration pattern (`var(--tblr-bg-surface-secondary)` replaces `#f5f5f5` so the dark theme reads correctly).
+- `--tblr-*` tokens are the preferred colour source in light *and* dark themes — `frontend/resources/css/items.css:51` shows the pattern (`var(--tblr-bg-surface-secondary)` replaced `#f5f5f5` so the dark theme reads correctly). Use a token for new CSS.
+- Known literals that remain by decision (closed as cosmetic, not defects): the dark header band `rgb(24, 36, 51)` (`job.css:2`), the `#app-loader` background `rgb(243 243 243)` (`common.css`), the dark form-control overrides `#1a2234` / `#243049` / `#f8fafc` (`common.css`), and the map/settings `.boxdraw` blue `#3887be`.
 - Items carry a `clickable` class for cards that open their detail page; `.clickable:hover` is tokenised.
