@@ -1325,7 +1325,7 @@ function itemContentElement(item, opts) {
 				if (item.data_file) {
 					iframe.src = `/repo/${item.repo_id}/${item.data_file}`;
 				} else if (item.data_text) {
-					iframe.srcdoc = DOMPurify.sanitize(truncated);
+					iframe.srcdoc = DOMPurify.sanitize(text);
 				}
 				elem.append(iframe);
 			}
