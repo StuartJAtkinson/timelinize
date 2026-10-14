@@ -23,6 +23,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -634,9 +635,8 @@ JOIN entities ON from_ea.entity_id = entities.id`)
 type uint64Slice []uint64
 
 func (s uint64Slice) hash() string {
-	sort.Sort(s) // TODO: this doesn't seem to be working
 	var sb strings.Builder
-	for _, v := range s {
+	for _, v := range slices.Sorted(slices.Values(s)) {
 		sb.WriteString(strconv.FormatUint(v, 10))
 		sb.WriteRune(',')
 	}
