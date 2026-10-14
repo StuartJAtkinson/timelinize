@@ -7,9 +7,9 @@
 
 ## Open
 
-- [ ] **Stale "open design choices" worksheet still in the repo after the question was answered** — `CONSIDERATIONS.html` and its render `shots/page-pretitle-options.png` (commit 8c97b9c) still present the page-pretitle 1a/1b choice as open, but it was decided 1a and shipped (every header now has a pretitle). Nothing references either file. Delete both (and `shots/` if it ends up empty). *(found 2026-10-14)*
 
 ## Resolved
+- [x] **Stale "open design choices" worksheet still in the repo after the question was answered** — `CONSIDERATIONS.html` and its render `shots/page-pretitle-options.png` (commit 8c97b9c) still present the page-pretitle 1a/1b choice as open, but it was decided 1a and shipped (every header now has a pretitle). Nothing references either file. Delete both (and `shots/` if it ends up empty). *(found 2026-10-14)* — auto-continue *(resolved 2026-10-14)*
 - [x] **`uint64Slice.hash()` sorts the caller's slice in place** — `timeline/conversations.go:637` calls `sort.Sort(s)` on the receiver, so hashing a conversation's entity list reorders it; `TestUint64SliceHash_DoesNotMutateReceiver` (`timeline/conversations_test.go:7`) fails on `main`. Sort a copy (`slices.Sorted(slices.Values(s))`) and drop the stale TODO. *(found 2026-10-09)* — auto-continue *(resolved 2026-10-14)*
 - [x] **Inline HTML text items throw instead of rendering** — `frontend/resources/js/common-lib.js:1328` does `iframe.srcdoc = DOMPurify.sanitize(truncated)` but `truncated` is declared nowhere in the file (the in-scope variable is `text`), so any item whose `data_text` sniffs as `text/html` raises a ReferenceError and shows nothing. Newly reachable: socialMediaArchiver Reddit posts (`<!-- SC_OFF --><div class="md">…`) are sniffed as `text/html`. Replace `truncated` with `text`. *(found 2026-10-09)* — auto-continue *(resolved 2026-10-14)*
 - [x] **`entities.html` filter row carries a dead commented-out "Show / per page" pagination block** — `frontend/pages/entities.html:29-36`: fully-commented pagination control, no JS reads it, no caller references it. Delete. *(found 2026-09-29)* — auto-continue *(resolved 2026-10-14)*
