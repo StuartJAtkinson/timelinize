@@ -766,6 +766,7 @@ func (app App) Import(params ImportParameters) (uint64, error) {
 	const queueDuration = 5 * time.Second
 	scheduled := time.Now().Add(queueDuration)
 	if params.Job.ProcessingOptions.Interactive != nil {
+		params.Job.ProcessingOptions.Interactive.Graphs = make(chan *timeline.InteractiveGraph)
 		scheduled = time.Time{}
 	}
 	return tl.CreateJob(params.Job, scheduled, 0, 0, 0)

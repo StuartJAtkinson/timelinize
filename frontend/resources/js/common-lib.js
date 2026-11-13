@@ -1081,6 +1081,14 @@ function entityPicture(entity) {
 // we show the thumbnail (it's more common), and you turn on showing the more
 // expensive preview image
 // TODO: rename this to something else -- also used for thumbnail videos...
+function interactiveDataSrc(item) {
+	if (item.interactive) {
+		const params = new URLSearchParams({ data_type: item.data_type || '' });
+		return `/repo/${item.repo_id}/interactive/${item.interactive.job_id}/${item.interactive.graph_id}?${params}`;
+	}
+	return `/repo/${item.repo_id}/${item.data_file}`;
+}
+
 function itemImgSrc(item, thumbnail = false) {
 	if (!item.data_file && !item.interactive) {
 		return "";
@@ -1335,7 +1343,7 @@ function itemContentElement(item, opts) {
 			} else if (item.data_type.startsWith("text/html")) {
 				const iframe = document.createElement('iframe');
 				if (item.data_file) {
-					iframe.src = `/repo/${item.repo_id}/${item.data_file}`;
+					iframe.src = interactiveDataSrc(item);
 				} else if (item.data_text) {
 					iframe.srcdoc = DOMPurify.sanitize(text);
 				}
@@ -1351,7 +1359,7 @@ function itemContentElement(item, opts) {
 			if (item.data_type.startsWith("text/html")) {
 				renderTextData(container);
 			} else {
-				fetch(`/repo/${item.repo_id}/${item.data_file}`)
+				fetch(interactiveDataSrc(item))
 					.then((response) => response.text())
 					.then((text) => {
 						renderTextData(container, text);
@@ -1552,14 +1560,16 @@ function itemContentElement(item, opts) {
 
 				return container;
 			};
-			if (item.data_file) {
-				if (opts?.thumbnail) {
+			if (item.data_file || item.interactive) {
+				if (opts?.thumbnail && item.data_file) {
 					return makeVideoTag([ {src: itemImgSrc(item, true), type: 'video/webm'} ]);
 				} else {
 					// prefer original video if browser supports it, otherwise they will have to choose the transcode
-					// TODO: videos still being imported interactively...
+					if (item.interactive) {
+						return makeVideoTag([{src: interactiveDataSrc(item), type: item.data_type}]);
+					}
 					return makeVideoTag([
-						{src: `/repo/${item.repo_id}/${item.data_file}`, type: item.data_type},
+						{src: interactiveDataSrc(item), type: item.data_type},
 						{src: `/repo/${item.repo_id}/transcode/${item.data_file}`, type: 'video/webm'}
 					]);
 				}
@@ -1575,14 +1585,14 @@ function itemContentElement(item, opts) {
 			audioTag.classList.add('content');
 			audioTag.dataset.contentType = "audio";
 			audioTag.setAttribute('controls', '');
-			audioTag.src = `/repo/${item.repo_id}/${item.data_file}`;
+			audioTag.src = interactiveDataSrc(item);
 			return audioTag;
 		}
 		else if (item.data_type == "application/pdf")
 		{
 			const objectTag = document.createElement('object');
 			objectTag.type = item.data_type;
-			objectTag.data = `/repo/${item.repo_id}/${item.data_file}#zoom=FitH`;
+			objectTag.data = `${interactiveDataSrc(item)}#zoom=FitH`;
 			objectTag.innerHTML = "<p>Could not render PDF.</p>";
 
 			const divContainer = document.createElement('div');

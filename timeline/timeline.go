@@ -35,6 +35,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/google/uuid"
@@ -930,27 +931,45 @@ func (tl *Timeline) LoadEntity(id uint64) (Entity, error) {
 func (tl *Timeline) NextGraphFromImport(jobID uint64) (*Graph, error) {
 	ij, err := tl.loadInteractiveImportJob(jobID)
 	if err != nil {
+		// The UI requests the next graph immediately after submitting the last
+		// one. The import can finish and leave activeJobs before that request
+		// arrives, so recognize a successfully completed import as end-of-stream.
+		tl.activeJobsMu.RLock()
+		_, active := tl.activeJobs[jobID]
+		tl.activeJobsMu.RUnlock()
+		if !active {
+			var state JobState
+			stateErr := tl.db.ReadPool.QueryRow(`SELECT state FROM jobs WHERE id=? LIMIT 1`, jobID).Scan(&state)
+			if stateErr == nil && state == JobSucceeded {
+				return nil, nil
+			}
+		}
 		return nil, err
 	}
 
-	// see if graph is already being processed interactively
-	graphPath := filepath.Join(ij.tempGraphFolder(), "root.graph")
-	if FileExists(graphPath) {
-		var g *Graph
-		file, err := os.Open(graphPath)
-		if err != nil {
-			return nil, err
+	ij.interactiveMu.Lock()
+	defer ij.interactiveMu.Unlock()
+
+	if ij.interactiveCurrent != nil {
+		if ij.interactiveSubmitting {
+			return nil, errors.New("interactive graph is being submitted")
 		}
-		defer file.Close()
-		if err = json.NewDecoder(file).Decode(&g); err != nil {
-			return nil, err
-		}
-		return g, nil
+		return ij.interactiveCurrent.Graph, nil
 	}
 
-	// TODO: see if there's already one that has been received
-	g := <-ij.ProcessingOptions.Interactive.Graphs
-	return g.Graph, nil
+	select {
+	case interactiveGraph, ok := <-ij.ProcessingOptions.Interactive.Graphs:
+		if !ok {
+			return nil, nil
+		}
+		if interactiveGraph == nil || interactiveGraph.Graph == nil {
+			return nil, errors.New("interactive import produced an empty graph")
+		}
+		ij.interactiveCurrent = interactiveGraph
+		return interactiveGraph.Graph, nil
+	case <-ij.job.Context().Done():
+		return nil, ij.job.Context().Err()
+	}
 }
 
 func (tl *Timeline) SubmitGraph(jobID uint64, g *Graph, skip bool) error {
@@ -958,18 +977,72 @@ func (tl *Timeline) SubmitGraph(jobID uint64, g *Graph, skip bool) error {
 	if err != nil {
 		return err
 	}
+	if g == nil {
+		return errors.New("submitted graph is empty")
+	}
+
+	ij.interactiveMu.Lock()
+	interactiveGraph := ij.interactiveCurrent
+	if interactiveGraph == nil {
+		ij.interactiveMu.Unlock()
+		return errors.New("there is no interactive graph waiting for review")
+	}
+	if ij.interactiveSubmitting {
+		ij.interactiveMu.Unlock()
+		return errors.New("interactive graph is already being submitted")
+	}
+	ij.interactiveSubmitting = true
+	ij.interactiveMu.Unlock()
+
+	succeeded := false
+	defer func() {
+		if !succeeded {
+			ij.interactiveMu.Lock()
+			ij.interactiveSubmitting = false
+			ij.interactiveMu.Unlock()
+		}
+	}()
+
+	if g.ProcessingID != interactiveGraph.Graph.ProcessingID {
+		return errors.New("submitted graph does not match the graph waiting for review")
+	}
+	g.Checkpoint = interactiveGraph.Graph.Checkpoint
+	if err := restoreInteractiveGraphData(interactiveGraph.Graph, g, tl.ID(), jobID, !skip); err != nil {
+		return fmt.Errorf("restoring interactive graph content: %w", err)
+	}
+
 	if !skip {
 		ij.pMu.Lock()
 		proc := ij.p
 		ij.pMu.Unlock()
-		if err := proc.pipeline(tl.ctx, []*Graph{g}); err != nil {
+		if proc == nil {
+			return errors.New("interactive import processor is not ready")
+		}
+		if err := proc.pipeline(ij.job.Context(), []*Graph{g}); err != nil {
 			return err
 		}
+	} else {
+		atomic.AddInt64(ij.skippedItemCount, int64(countGraphItems(interactiveGraph.Graph)))
 	}
-	graphPath := ij.tempGraphFolder()
-	if err := os.RemoveAll(graphPath); err != nil {
-		return fmt.Errorf("clearing graph's state in temp folder: %s: %w", graphPath, err)
+
+	ij.job.Progress(interactiveGraph.Graph.Size())
+	if interactiveGraph.Graph.Checkpoint != nil {
+		ij.pMu.Lock()
+		proc := ij.p
+		ij.pMu.Unlock()
+		if proc != nil {
+			if err := ij.checkpoint(proc.estimatedCount, proc.outerLoopIdx, proc.innerLoopIdx, interactiveGraph.Graph.Checkpoint); err != nil {
+				ij.job.Logger().Error("checkpointing interactive import", zap.Error(err))
+			}
+		}
 	}
+
+	ij.interactiveMu.Lock()
+	ij.interactiveCurrent = nil
+	ij.interactiveSubmitting = false
+	ij.interactiveMu.Unlock()
+	close(interactiveGraph.Submitted)
+	succeeded = true
 	return nil
 }
 
@@ -1378,8 +1451,8 @@ type InteractiveImport struct {
 }
 
 type InteractiveGraph struct {
-	Graph         *Graph
-	DataFileReady chan struct{}
+	Graph     *Graph
+	Submitted chan struct{} `json:"-"`
 }
 
 // FieldUpdatePolicy values specify how to update a field/column of an item in the DB.

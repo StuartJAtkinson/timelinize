@@ -197,7 +197,7 @@ tlz.pageControllers = {
 
 	"/pages/input.html": {
 		async render() {
-			inputPageMain();
+			await inputPageMain();
 		},
 	},
 

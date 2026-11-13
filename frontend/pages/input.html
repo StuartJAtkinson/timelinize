@@ -13,10 +13,10 @@
 			</div>
 			<div class="col-auto ms-auto">
 				<div class="btn-list">
-					<a class="btn btn-ghost-red disabled" title="Not yet implemented">
+					<button id="skip-graph" type="button" class="btn btn-ghost-red">
 						Skip
-					</a>
-					<a class="btn btn-primary disabled" title="Not yet implemented">
+					</button>
+					<button id="submit-graph" type="button" class="btn btn-primary">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
 							stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
 							class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check">
@@ -25,12 +25,14 @@
 							<path d="M9 12l2 2l4 -4" />
 						</svg>
 						Save and continue
-					</a>
+					</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<div id="interactive-error" class="alert alert-danger d-none mx-3" role="alert"></div>
 
 <!-- Page body -->
 <div class="page-body">
@@ -39,6 +41,15 @@
 		<div class="row row-cards">
 
 			<div class="col-lg-6">
+
+				<div id="interactive-item-fields" class="card card-sm mb-3 d-none">
+					<div class="card-body">
+						<label class="form-label" for="interactive-timestamp">Timestamp</label>
+						<input id="interactive-timestamp" class="form-control mb-3" type="datetime-local" step="1">
+						<label class="form-label" for="interactive-classification">Classification</label>
+						<input id="interactive-classification" class="form-control" type="text">
+					</div>
+				</div>
 
 				<div id="item-content" class="rounded overflow-hidden">
 

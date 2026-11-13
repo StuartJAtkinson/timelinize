@@ -38,6 +38,7 @@ import (
 	"time"
 
 	"github.com/Masterminds/sprig/v3"
+	"github.com/google/uuid"
 	"github.com/StuartJAtkinson/timelinize/datasources/media"
 	"github.com/StuartJAtkinson/timelinize/internal/tlzmedia"
 	"github.com/StuartJAtkinson/timelinize/timeline"
@@ -110,7 +111,7 @@ func (s server) serveFrontend(w http.ResponseWriter, r *http.Request) error {
 }
 
 // handleRepoResource serves resources to the UI in this URL format:
-// / repo / {repoID} / data|assets|thumbnail|image|transcode|motion-photo|dl / {dataFilePath_or_thumbnailItemID.jpg_or_itemID}
+// / repo / {repoID} / data|assets|thumbnail|image|transcode|motion-photo|dl|interactive / {dataFilePath_or_thumbnailItemID.jpg_or_itemID}
 func (s server) handleRepoResource(w http.ResponseWriter, r *http.Request) error {
 	const minParts, maxParts = 5, 6
 	parts := strings.SplitN(r.URL.Path, "/", maxParts)
@@ -168,6 +169,32 @@ func (s server) handleRepoResource(w http.ResponseWriter, r *http.Request) error
 	case "thumbnail":
 		// item thumbnail; serve from cache or generate if needed
 		return s.serveThumbnail(w, r, tl)
+
+	case "interactive":
+		if len(parts) != maxParts {
+			return fmt.Errorf("invalid interactive data path")
+		}
+		jobID, err := strconv.ParseUint(parts[4], 10, 64)
+		if err != nil {
+			return fmt.Errorf("bad interactive job ID %s: %w", parts[4], err)
+		}
+		graphID, err := uuid.Parse(parts[5])
+		if err != nil {
+			return fmt.Errorf("bad interactive graph ID %s: %w", parts[5], err)
+		}
+		filename := timeline.InteractiveGraphDataFilePath(tl.ID(), jobID, graphID.String())
+		if _, err := os.Stat(filename); err != nil {
+			return err
+		}
+		if contentType := r.URL.Query().Get("data_type"); contentType != "" {
+			mediaType, _, err := mime.ParseMediaType(contentType)
+			if err != nil {
+				return fmt.Errorf("invalid interactive data type %q: %w", contentType, err)
+			}
+			w.Header().Set("Content-Type", mediaType)
+		}
+		http.ServeFile(w, r, filename)
+		return nil
 
 	case "image":
 		// preview image; generate on-the-fly
@@ -304,6 +331,11 @@ func (s server) servePreviewImage(w http.ResponseWriter, r *http.Request, tl ope
 		if err != nil {
 			return fmt.Errorf("bad job ID %s: %w", jobIDStr, err)
 		}
+		parsedGraphID, err := uuid.Parse(graphID)
+		if err != nil {
+			return fmt.Errorf("bad graph ID %s: %w", graphID, err)
+		}
+		graphID = parsedGraphID.String()
 		imgPath = timeline.InteractiveGraphDataFilePath(tl.ID(), jobID, graphID)
 		imgHash = []byte(graphID) // this is not really a hash, of course, but it works for our purposes, and etags aren't really useful for interactive imports anyway
 	}

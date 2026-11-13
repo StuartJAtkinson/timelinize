@@ -21,149 +21,367 @@ package timeline
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
-// TODO: INTERACTIVE IMPORTS ARE STILL WIP.
+const interactiveTextPreviewLimit = 64 * 1024
 
 func (p *processor) interactiveGraph(ctx context.Context, root *Graph, opts *InteractiveImport) error {
-	p.assignGraphIDs(root)
-
-	if err := p.saveInteractiveGraphFromRootNode(root); err != nil {
-		return err
+	if root == nil {
+		return errors.New("interactive import received an empty graph")
 	}
-
+	p.assignGraphIDs(root)
+	defer func() {
+		if err := os.RemoveAll(p.tempGraphFolder()); err != nil {
+			p.log.Warn("cleaning up interactive graph files", zap.Error(err))
+		}
+	}()
 	if err := p.downloadGraphDataFiles(ctx, root); err != nil {
 		return err
 	}
 
+	interactiveGraph := &InteractiveGraph{
+		Graph:     root,
+		Submitted: make(chan struct{}),
+	}
 	p.log.Info("graph ready", zap.String("graph_id", root.ProcessingID))
 
-	opts.Graphs <- &InteractiveGraph{
-		Graph:         root,
-		DataFileReady: make(chan struct{}),
+	select {
+	case opts.Graphs <- interactiveGraph:
+	case <-ctx.Done():
+		return ctx.Err()
 	}
 
-	return errors.New("TODO: WIP")
-}
-
-func (p *processor) saveInteractiveGraphFromRootNode(rootNode *Graph) error {
-	graphPath := p.tempGraphFolder()
-	if err := os.MkdirAll(graphPath, 0700); err != nil {
-		return err
+	select {
+	case <-interactiveGraph.Submitted:
+		return nil
+	case <-ctx.Done():
+		return ctx.Err()
 	}
-	file, err := os.Create(filepath.Join(graphPath, "root.graph"))
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	if err := json.NewEncoder(file).Encode(rootNode); err != nil {
-		return err
-	}
-	return file.Sync()
 }
 
 func (p *processor) assignGraphIDs(g *Graph) {
-	if g == nil {
-		return
+	visited := make(map[*Graph]struct{})
+	var assign func(*Graph)
+	assign = func(g *Graph) {
+		if g == nil {
+			return
+		}
+		if _, ok := visited[g]; ok {
+			return
+		}
+		visited[g] = struct{}{}
+		if g.ProcessingID == "" {
+			g.ProcessingID = uuid.New().String()
+		}
+		for _, edge := range g.Edges {
+			assign(edge.From)
+			assign(edge.To)
+		}
 	}
-	if g.ProcessingID == "" {
-		g.ProcessingID = uuid.New().String()
+	assign(g)
+}
+
+func (p *processor) downloadGraphDataFiles(ctx context.Context, root *Graph) error {
+	visited := make(map[*Graph]struct{})
+	var download func(*Graph) error
+	download = func(g *Graph) error {
+		if g == nil {
+			return nil
+		}
+		if _, ok := visited[g]; ok {
+			return nil
+		}
+		visited[g] = struct{}{}
+		if err := ctx.Err(); err != nil {
+			return err
+		}
+
+		var dataReader io.ReadCloser
+		var dataFilename string
+		switch {
+		case g.Item != nil && g.Item.Content.Data != nil:
+			dataFilename = g.Item.Content.Filename
+			reader, err := g.Item.Content.Data(ctx)
+			if err != nil {
+				return fmt.Errorf("opening item data reader: %w", err)
+			}
+			if reader == nil {
+				return errors.New("item data reader is nil")
+			}
+			dataReader = reader
+		case g.Entity != nil && g.Entity.NewPicture != nil:
+			reader, err := g.Entity.NewPicture(ctx)
+			if err != nil {
+				return fmt.Errorf("opening entity picture reader: %w", err)
+			}
+			if reader == nil {
+				return errors.New("entity picture reader is nil")
+			}
+			dataReader = reader
+		}
+
+		if dataReader != nil {
+			if g.Item != nil {
+				g.Item.Content.DataAvailable = true
+			}
+			file, err := p.createInteractiveGraphDataFile(g)
+			if err != nil {
+				_ = dataReader.Close()
+				return fmt.Errorf("creating interactive graph data file: %w", err)
+			}
+			dataReader, err = p.fillMediaTypeOfInteractiveGraph(g, dataReader, dataFilename)
+			if err != nil {
+				_ = file.Close()
+				if !errors.Is(err, io.EOF) {
+					_ = dataReader.Close()
+					_ = os.Remove(file.Name())
+					return fmt.Errorf("detecting interactive graph media type: %w", err)
+				}
+			} else {
+				if _, err := copyWithContext(ctx, file, dataReader); err != nil {
+					_ = dataReader.Close()
+					_ = file.Close()
+					_ = os.Remove(file.Name())
+					return fmt.Errorf("staging interactive graph data: %w", err)
+				}
+				if err := file.Sync(); err != nil {
+					_ = dataReader.Close()
+					_ = file.Close()
+					_ = os.Remove(file.Name())
+					return fmt.Errorf("syncing interactive graph data: %w", err)
+				}
+				if err := file.Close(); err != nil {
+					_ = dataReader.Close()
+					_ = os.Remove(file.Name())
+					return fmt.Errorf("closing interactive graph data: %w", err)
+				}
+			}
+			if err := dataReader.Close(); err != nil {
+				return fmt.Errorf("closing interactive graph data reader: %w", err)
+			}
+			if g.Item != nil && strings.HasPrefix(g.Item.Content.MediaType, "text/") {
+				if err := p.loadInteractiveTextPreview(g); err != nil {
+					return err
+				}
+			}
+		}
+
+		if g.Item != nil && g.Item.Owner.NewPicture != nil {
+			reader, err := g.Item.Owner.NewPicture(ctx)
+			if err != nil {
+				return fmt.Errorf("opening item owner picture reader: %w", err)
+			}
+			if reader == nil {
+				return errors.New("item owner picture reader is nil")
+			}
+			filename := InteractiveGraphOwnerPictureFilePath(p.tl.ID(), p.ij.job.ID(), g.ProcessingID)
+			if err := os.MkdirAll(filepath.Dir(filename), 0700); err != nil {
+				_ = reader.Close()
+				return fmt.Errorf("creating interactive owner picture directory: %w", err)
+			}
+			file, err := os.Create(filename)
+			if err != nil {
+				_ = reader.Close()
+				return fmt.Errorf("creating interactive owner picture file: %w", err)
+			}
+			if _, err := copyWithContext(ctx, file, reader); err != nil {
+				_ = reader.Close()
+				_ = file.Close()
+				_ = os.Remove(filename)
+				return fmt.Errorf("staging interactive owner picture: %w", err)
+			}
+			if err := file.Sync(); err != nil {
+				_ = reader.Close()
+				_ = file.Close()
+				_ = os.Remove(filename)
+				return fmt.Errorf("syncing interactive owner picture: %w", err)
+			}
+			if err := file.Close(); err != nil {
+				_ = reader.Close()
+				_ = os.Remove(filename)
+				return fmt.Errorf("closing interactive owner picture: %w", err)
+			}
+			if err := reader.Close(); err != nil {
+				return fmt.Errorf("closing interactive owner picture reader: %w", err)
+			}
+		}
+
+		for _, edge := range g.Edges {
+			if err := download(edge.From); err != nil {
+				return err
+			}
+			if err := download(edge.To); err != nil {
+				return err
+			}
+		}
+		return nil
 	}
-	for _, edge := range g.Edges {
-		p.assignGraphIDs(edge.From)
-		p.assignGraphIDs(edge.To)
+	return download(root)
+}
+
+func copyWithContext(ctx context.Context, dst io.Writer, src io.Reader) (int64, error) {
+	buf := make([]byte, 32*1024)
+	var total int64
+	emptyReads := 0
+	for {
+		if err := ctx.Err(); err != nil {
+			return total, err
+		}
+		n, readErr := src.Read(buf)
+		if n == 0 && readErr == nil {
+			emptyReads++
+			if emptyReads >= 100 {
+				return total, io.ErrNoProgress
+			}
+		} else {
+			emptyReads = 0
+		}
+		if n > 0 {
+			written, writeErr := dst.Write(buf[:n])
+			total += int64(written)
+			if writeErr != nil {
+				return total, writeErr
+			}
+			if written != n {
+				return total, io.ErrShortWrite
+			}
+		}
+		if readErr != nil {
+			if errors.Is(readErr, io.EOF) {
+				return total, nil
+			}
+			return total, readErr
+		}
 	}
 }
 
-func (p *processor) downloadGraphDataFiles(ctx context.Context, g *Graph) error {
-	if g == nil {
+func (p *processor) loadInteractiveTextPreview(g *Graph) error {
+	filename := InteractiveGraphDataFilePath(p.tl.ID(), p.ij.job.ID(), g.ProcessingID)
+	file, err := os.Open(filename)
+	if err != nil {
+		return fmt.Errorf("opening interactive text preview: %w", err)
+	}
+	defer file.Close()
+
+	preview, err := io.ReadAll(io.LimitReader(file, interactiveTextPreviewLimit+1))
+	if err != nil {
+		return fmt.Errorf("reading interactive text preview: %w", err)
+	}
+	if len(preview) > interactiveTextPreviewLimit {
+		preview = append(preview[:interactiveTextPreviewLimit], []byte("\n[preview truncated]")...)
+	}
+	g.Item.Content.PreviewText = string(preview)
+	return nil
+}
+
+func restoreInteractiveGraphData(original, submitted *Graph, repoID uuid.UUID, jobID uint64, restoreData bool) error {
+	type graphPair struct {
+		original  *Graph
+		submitted *Graph
+	}
+	visited := make(map[graphPair]struct{})
+	var restore func(*Graph, *Graph) error
+	restore = func(original, submitted *Graph) error {
+		if original == nil || submitted == nil {
+			if original == submitted {
+				return nil
+			}
+			return errors.New("graph structure changed during review")
+		}
+		pair := graphPair{original: original, submitted: submitted}
+		if _, ok := visited[pair]; ok {
+			return nil
+		}
+		visited[pair] = struct{}{}
+		if original.ProcessingID == "" || original.ProcessingID != submitted.ProcessingID {
+			return errors.New("graph node ID changed during review")
+		}
+		if (original.Item == nil) != (submitted.Item == nil) || (original.Entity == nil) != (submitted.Entity == nil) {
+			return errors.New("graph node type changed during review")
+		}
+		if restoreData && original.Item != nil && original.Item.Content.Data != nil {
+			filename := InteractiveGraphDataFilePath(repoID, jobID, original.ProcessingID)
+			if !FileExists(filename) {
+				return fmt.Errorf("staged item data is missing: %s", filename)
+			}
+			submitted.Item.Content.Data = func(ctx context.Context) (io.ReadCloser, error) {
+				if err := ctx.Err(); err != nil {
+					return nil, err
+				}
+				return os.Open(filename)
+			}
+		}
+		if restoreData && original.Item != nil && original.Item.Owner.NewPicture != nil {
+			filename := InteractiveGraphOwnerPictureFilePath(repoID, jobID, original.ProcessingID)
+			if !FileExists(filename) {
+				return fmt.Errorf("staged item owner picture is missing: %s", filename)
+			}
+			submitted.Item.Owner.NewPicture = func(ctx context.Context) (io.ReadCloser, error) {
+				if err := ctx.Err(); err != nil {
+					return nil, err
+				}
+				return os.Open(filename)
+			}
+		}
+		if restoreData && original.Entity != nil && original.Entity.NewPicture != nil {
+			filename := InteractiveGraphDataFilePath(repoID, jobID, original.ProcessingID)
+			if !FileExists(filename) {
+				return fmt.Errorf("staged entity picture is missing: %s", filename)
+			}
+			submitted.Entity.NewPicture = func(ctx context.Context) (io.ReadCloser, error) {
+				if err := ctx.Err(); err != nil {
+					return nil, err
+				}
+				return os.Open(filename)
+			}
+		}
+		if len(original.Edges) != len(submitted.Edges) {
+			return errors.New("graph relationships changed during review")
+		}
+		for i := range original.Edges {
+			if err := restore(original.Edges[i].From, submitted.Edges[i].From); err != nil {
+				return err
+			}
+			if err := restore(original.Edges[i].To, submitted.Edges[i].To); err != nil {
+				return err
+			}
+		}
 		return nil
 	}
-	if err := ctx.Err(); err != nil {
-		return err
-	}
+	return restore(original, submitted)
+}
 
-	if (g.Item != nil && g.Item.Content.Data != nil) ||
-		(g.Entity != nil && g.Entity.NewPicture != nil) {
-		// TODO: Do CoW (write to a .tmp or .dl file first, then rename when finished, so we know by observation if it is complete
-		file, err := p.createInteractiveGraphDataFile(g)
-		if err != nil {
-			return fmt.Errorf("openin graph data file: %w", err)
+func countGraphItems(root *Graph) int {
+	visited := make(map[*Graph]struct{})
+	var count int
+	var walk func(*Graph)
+	walk = func(g *Graph) {
+		if g == nil {
+			return
 		}
-		// don't defer close, since we need to write to it in a goroutine
-
-		var dataFilename string
-
-		// open the reader for either the item data or the entity picture
-		var dataReader io.ReadCloser
-		if g.Item != nil && g.Item.Content.Data != nil {
-			dataFilename = g.Item.Content.Filename
-			dataReader, err = g.Item.Content.Data(ctx)
-		} else if g.Entity != nil && g.Entity.NewPicture != nil {
-			dataReader, err = g.Entity.NewPicture(ctx)
+		if _, ok := visited[g]; ok {
+			return
 		}
-		// TODO: download the item owner's profile picture too, if available (though I don't know of anywhere this happens yet)
-		// if g.Item != nil && g.Item.Owner.NewPicture != nil {
-		// }
-		if err != nil {
-			_ = file.Close()
-			return fmt.Errorf("opening data reader from graph: %w", err)
+		visited[g] = struct{}{}
+		if g.Item != nil {
+			count++
 		}
-		// don't defer close of the data reader, since we need to read from it in a goroutine
-
-		// read a few bytes off the top to detect the media type, if missing (for item files only)
-		dataReader, err = p.fillMediaTypeOfInteractiveGraph(g, dataReader, dataFilename)
-		if err != nil {
-			_ = dataReader.Close()
-			_ = file.Close()
-
-			if rmErr := os.Remove(file.Name()); rmErr != nil {
-				p.log.Info("could not clean up data file",
-					zap.Error(rmErr),
-					zap.String("filename", file.Name()))
-			}
-
-			if errors.Is(err, io.EOF) {
-				p.log.Info("data file had no content", zap.String("filename", dataFilename))
-			} else {
-				return fmt.Errorf("trying to determine media type: %w", err)
-			}
-		} else {
-			// only proceed to copy the file contents if we didn't already get an EOF (or any other error)
-			go func() {
-				defer file.Close()
-				defer dataReader.Close()
-
-				if _, err := io.Copy(file, dataReader); err != nil {
-					p.log.Error("copying data to temporary file", zap.Error(err))
-					return
-				}
-
-				if err := file.Sync(); err != nil {
-					p.log.Error("syncing data file", zap.Error(err))
-				}
-			}()
+		for _, edge := range g.Edges {
+			walk(edge.From)
+			walk(edge.To)
 		}
 	}
-
-	for _, edge := range g.Edges {
-		if err := p.downloadGraphDataFiles(ctx, edge.From); err != nil {
-			return err
-		}
-		if err := p.downloadGraphDataFiles(ctx, edge.To); err != nil {
-			return err
-		}
-	}
-	return nil
+	walk(root)
+	return count
 }
 
 func (p *processor) fillMediaTypeOfInteractiveGraph(g *Graph, dataReader io.ReadCloser, dataFilename string) (io.ReadCloser, error) {
@@ -190,9 +408,17 @@ func (p *processor) fillMediaTypeOfInteractiveGraph(g *Graph, dataReader io.Read
 	g.Item.Content.MediaType = detectContentType(peekedBytes, dataFilename)
 
 	// replace the reader with one that re-reads the buffered bytes before resuming reading the source stream
-	dataReader = io.NopCloser(io.MultiReader(bytes.NewReader(peekedBytes), dataReader))
+	dataReader = multiReadCloser{
+		Reader: io.MultiReader(bytes.NewReader(peekedBytes), dataReader),
+		Closer: dataReader,
+	}
 
 	return dataReader, nil
+}
+
+type multiReadCloser struct {
+	io.Reader
+	io.Closer
 }
 
 func (p *processor) createInteractiveGraphDataFile(g *Graph) (*os.File, error) {
@@ -214,6 +440,10 @@ func (p *processor) createInteractiveGraphDataFile(g *Graph) (*os.File, error) {
 
 func InteractiveGraphDataFilePath(repoID uuid.UUID, jobID uint64, graphID string) string {
 	return filepath.Join(tempGraphFolder(repoID, jobID), graphID+".graph.data")
+}
+
+func InteractiveGraphOwnerPictureFilePath(repoID uuid.UUID, jobID uint64, graphID string) string {
+	return filepath.Join(tempGraphFolder(repoID, jobID), graphID+".owner.picture")
 }
 
 func (p *processor) tempGraphFolder() string {

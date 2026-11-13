@@ -537,6 +537,12 @@ type ItemData struct {
 
 	// A function that returns a way to read the item's data.
 	Data DataFunc `json:"-"`
+
+	// PreviewText is populated temporarily for interactive import review.
+	PreviewText string `json:"preview_text,omitempty"`
+
+	// DataAvailable indicates that interactive review has staged content for preview.
+	DataAvailable bool `json:"data_available,omitempty"`
 }
 
 // isPlainTextOrMarkdown returns true if the item is declared as having

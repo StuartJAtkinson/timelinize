@@ -73,6 +73,10 @@ type ImportJob struct {
 	p   *processor
 	pMu *sync.Mutex
 
+	interactiveMu         sync.Mutex
+	interactiveCurrent    *InteractiveGraph
+	interactiveSubmitting bool
+
 	Plan              ImportPlan        `json:"plan,omitempty"`
 	ProcessingOptions ProcessingOptions `json:"processing_options,omitempty"`
 	EstimateTotal     bool              `json:"estimate_total,omitempty"`
@@ -134,7 +138,14 @@ func (ij *ImportJob) Run(job *ActiveJob, checkpoint []byte) error {
 	estimating := ij.EstimateTotal
 
 	if ij.ProcessingOptions.Interactive != nil {
-		ij.ProcessingOptions.Interactive.Graphs = make(chan *InteractiveGraph)
+		if ij.ProcessingOptions.Interactive.Graphs == nil {
+			ij.ProcessingOptions.Interactive.Graphs = make(chan *InteractiveGraph)
+		}
+		defer close(ij.ProcessingOptions.Interactive.Graphs)
+		ij.interactiveMu.Lock()
+		ij.interactiveCurrent = nil
+		ij.interactiveSubmitting = false
+		ij.interactiveMu.Unlock()
 	}
 
 	var chkpt importJobCheckpoint
