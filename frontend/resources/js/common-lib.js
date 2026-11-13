@@ -1082,22 +1082,34 @@ function entityPicture(entity) {
 // expensive preview image
 // TODO: rename this to something else -- also used for thumbnail videos...
 function itemImgSrc(item, thumbnail = false) {
-	if (!item.data_file) {
+	if (!item.data_file && !item.interactive) {
 		return "";
 	}
-	if (item.data_file.startsWith("http://") || item.data_file.startsWith("https://")) {
+	if (item.data_file?.startsWith("http://") || item.data_file?.startsWith("https://")) {
 		return item.data_file;
 	}
 	if (item.data_type == "image/gif") {
 		thumbnail = false; // just show the actual gif
 	}
 	const params = new URLSearchParams({
-		data_id: item.data_id || "",
-		data_file: item.data_file,
 		data_type: item.data_type
 	});
+	if (item.data_id) {
+		params.set("data_id", item.data_id);
+	}
+	if (item.data_file) {
+		params.set("data_file", item.data_file);
+	}
+	if (item.interactive) {
+		// this item hasn't yet been imported, it is still in the processing phase,
+		// so the backend needs to know to get the file from somewhere other than
+		// the timeline data folder
+		params.set("job_id", item.interactive.job_id);
+		params.set("graph_id", item.interactive.graph_id);
+	}
+	let filename = item.id || item.interactive?.graph_id || "";
 	const ext = thumbnail ? "" : ".avif"; // thumbnail extension is dictated by server
-	return `/repo/${item.repo_id}/${thumbnail ? "thumbnail" : "image"}/${item.id ? item.id+ext : ""}?${params.toString()}`;
+	return `/repo/${item.repo_id}/${thumbnail ? "thumbnail" : "image"}/${filename ? filename+ext : ""}?${params.toString()}`;
 }
 
 function entityDisplayNameAndAttr(entity) {
@@ -1351,7 +1363,7 @@ function itemContentElement(item, opts) {
 
 		return container;
 	}
-	else if (item.data_file || item.data_hash || item.data_id)
+	else if (item.data_file || item.data_hash || item.data_id || item.interactive)
 	{
 		const wrapInLoaderContainer = function(container, mediaTag, readyEvent) {
 			const loaderSupercontainer = cloneTemplate('#loader-container');
@@ -1540,22 +1552,12 @@ function itemContentElement(item, opts) {
 
 				return container;
 			};
-
-			// // 3GPP files are common among text messages.
-			// if (item.data_type == "video/3gpp") {
-			// 	const loader = cloneTemplate('#loader-container');
-			// 	$('.loading-message', loader).innerText = "Transcoding";
-			// 	// TODO: if conversion fails, we should show or do something productive
-			// 	app.VideoToMP4(item.repo_id, item.data_file).then(mp4 => {
-			// 		loader.replaceWith(makeVideoTag("data:video/mp4;base64,"+mp4));
-			// 	});
-			// 	return loader;
-			// }
 			if (item.data_file) {
 				if (opts?.thumbnail) {
 					return makeVideoTag([ {src: itemImgSrc(item, true), type: 'video/webm'} ]);
 				} else {
 					// prefer original video if browser supports it, otherwise they will have to choose the transcode
+					// TODO: videos still being imported interactively...
 					return makeVideoTag([
 						{src: `/repo/${item.repo_id}/${item.data_file}`, type: item.data_type},
 						{src: `/repo/${item.repo_id}/transcode/${item.data_file}`, type: 'video/webm'}

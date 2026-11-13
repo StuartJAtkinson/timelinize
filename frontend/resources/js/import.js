@@ -145,7 +145,7 @@ on('shown.bs.modal', '#modal-plan-loading', async event => {
 		$('.sort-type', row).dataset.type = file.file_type;
 		$('.sort-filename', row).innerText = file.filename;
 		$('.sort-confidence', row).dataset.confidence = recognition.confidence;
-		$('.sort-confidence', row).innerText = `${(recognition.confidence*100).toFixed(0)}% match`;
+		$('.sort-confidence', row).innerText = `${Math.floor(recognition.confidence*100)}% match`;
 		if (recognition.confidence >= 0.90) {
 			$('.sort-confidence', row).classList.add("text-green");
 		} else if (recognition.confidence >= 0.75) {
@@ -392,7 +392,7 @@ on('click', '#start-import', async event => {
 				integrity: page.integrityChecks,
 				overwrite_local_changes: page.overwriteLocalChanges,
 				item_unique_constraints: page.itemUniqueConstraints,
-				// interactive: $('#interactive').checked ? {} : null,
+				interactive: $('#interactive').checked ? {} : null,
 				thumbnails: $('#generate-thumbnails').checked
 			},
 			estimate_total: $('#estimate-total').checked
