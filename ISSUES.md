@@ -73,6 +73,3 @@
 - [x] **`frontend/pages/entity.html` uses `<h1 class="page-title">` while every other page uses `<h2 class="page-title">`** — `entity.html:19`: `<h1 class="page-title my-2" id="name">` is the only `<h1 class="page-title">` in the codebase. All 11 other pages (dashboard, entities, items, input, job, map, settings, timeline, conversations, gallery, new) use `<h2 class="page-title">`. The existing ISSUES.md item on `import.html:9` is the related "bare `<h1>` with no class" issue — this one is the "right class, wrong tag level" case. Normalize `entity.html:19` to `<h2 class="page-title my-2" id="name">` for consistency. — auto-continue *(resolved 2026-08-02)*
 - [x] **Broken heading tag on the Settings page** — `frontend/pages/settings.html:9-11`: `<h20 class="page-title">Settings</h2>` — opening tag is `<h20>` (typo for `<h2>`), closing tag is the mismatched `</h2>`. Fix the opening tag. — auto-continue *(resolved 2026-08-01)*
 
-## Needs input (Auto Continue)
-*Left by Auto Continue 2026-10-10 — decide these, then clear CONSIDERATIONS.md.*
-- `page-pretitle` is on dashboard/entity/item/timeline/conversations/gallery/map but missing from entities, items, import, settings, input and job page headers. Add one to each (e.g. "Manage" for entities/items, "Data" for import/input/job, "Overview" for settings), or leave top-level pages bare?

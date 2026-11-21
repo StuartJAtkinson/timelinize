@@ -24,9 +24,9 @@ async function inputPageMain() {
 	function dateTimeLocalValue(timestamp) {
 		if (!timestamp) return '';
 		const date = new Date(timestamp);
-		if (Number.isNaN(date.getTime())) return '';
+		if (Number.isNaN(date.getTime()) || date.getUTCFullYear() <= 1) return '';
 		const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-		return localDate.toISOString().slice(0, 16);
+		return localDate.toISOString().slice(0, 19);
 	}
 
 	function renderGraph(graph) {
