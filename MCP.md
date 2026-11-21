@@ -1,6 +1,6 @@
 # MCP — timelinize
 
-**Design spec.** No MCP server exists yet.
+**Implemented in `mcp/` (`cmd/timelinize-mcp` and `timelinize mcp`).**
 
 - **Proposed server:** `timelinize`
 - **Transport:** stdio

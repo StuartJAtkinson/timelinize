@@ -33,6 +33,7 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/StuartJAtkinson/timelinize/mcp"
 	"github.com/StuartJAtkinson/timelinize/timeline"
 	"github.com/StuartJAtkinson/timelinize/tlzapp"
 	"go.uber.org/zap"
@@ -154,6 +155,9 @@ func getStandardSubcommand(app *tlzapp.App) (string, func() error) {
 				return err
 			}
 			select {}
+		},
+		"mcp": func() error {
+			return mcp.Serve(context.Background(), os.Stdin, os.Stdout, os.Getenv("TLZ_URL"))
 		},
 		"reset": func() error {
 			cfg, err := loadConfigFile()

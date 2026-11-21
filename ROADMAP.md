@@ -5,8 +5,9 @@
 > phases are headings and every slice is one commit-sized, self-contained line.
 > **Human-only** items carry no checkbox, so Auto never picks them up.
 
-**Now:** Milestone 3 — *Interactive review*. Milestones 1 and 2 are shipped: the fork is
-canonical, upstream PR work was ported, and socialMediaArchiver archives are supported.
+**Now:** Milestone 4 — *MCP recall server*. Milestones 1–3 are shipped: the fork is
+canonical, upstream PR work was ported, socialMediaArchiver archives are supported, and
+interactive import review is complete.
 
 ## Milestone 2 — Own sources
 
@@ -21,6 +22,10 @@ media with `local_path`). One importer for that archive covers all of them.
 ## Milestone 3 — Interactive review
 
 - [x] **M3a Interactive import review** — stage each incoming graph and its content, hold the import until the user saves or skips it, and restore staged readers before processing. The UI previews content, supports timestamp and classification edits, preserves pending state across reloads, and reports completion after the graph stream closes.
+
+## Milestone 4 — MCP recall server
+
+- [x] **M4a Read-only stdio MCP server** — new `mcp/` package and `cmd/timelinize-mcp` (plus `timelinize mcp` subcommand) wrapping the 11 read-only endpoints and 2 `tlz://` resources specified in `MCP.md`, capping search/conversation page sizes at 50 and failing with `"The app must already be running (http://127.0.0.1:12002)."` when offline. Done when `go test ./mcp/...` passes.
 
 ## Human-only
 
